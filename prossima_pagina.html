@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NOMAD | Phase_02_Gems</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Mono&family=Plus+Jakarta+Sans:wght@300;800&display=swap" rel="stylesheet">
+    <style>
+        :root { --acid: #ccff00; --dark: #050505; --deep: #0f0f0f; }
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background: var(--dark); color: #eee; line-height: 1.6; overflow-x: hidden; }
+        .mono { font-family: 'Space Mono', monospace; }
+        .acid-text { color: var(--acid); }
+        .acid-bg { background: var(--acid); }
+        
+        .mission-card { background: var(--deep); border: 1px solid #222; transition: all 0.3s ease; }
+        .mission-card:hover { border-color: var(--acid); box-shadow: 0 0 30px rgba(204, 255, 0, 0.05); }
+        
+        .timeline-item { border-left: 1px solid var(--acid); padding-left: 20px; position: relative; margin-bottom: 20px; }
+        .timeline-item::before { content: ''; position: absolute; left: -5px; top: 0; width: 9px; height: 9px; background: var(--acid); border-radius: 50%; }
+
+        #progress-bar { position: fixed; top: 0; left: 0; height: 3px; background: var(--acid); width: 0%; z-index: 2000; }
+
+        #terminal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 5000; padding: 20px; flex-direction: column; justify-content: center; align-items: center; }
+        .scanline { width: 100%; height: 100px; background: linear-gradient(0deg, rgba(204, 255, 0, 0) 0%, rgba(204, 255, 0, 0.1) 50%, rgba(204, 255, 0, 0) 100%); position: absolute; animation: scan 4s linear infinite; }
+        @keyframes scan { from { top: -100px; } to { top: 100%; } }
+    </style>
+</head>
+<body class="p-4 md:p-12">
+
+    <div id="progress-bar"></div>
+
+    <div id="terminal-overlay">
+        <div class="scanline"></div>
+        <div class="max-w-md w-full mono text-xs acid-text space-y-2" id="terminal-content"></div>
+    </div>
+
+    <header class="max-w-6xl mx-auto mb-20 border-b border-white/10 pb-10">
+        <div class="flex justify-between items-start">
+            <div>
+                <a href="index.html" class="mono text-xs acid-text hover:underline tracking-widest">← RETURN_TO_DATABASE</a>
+                <h1 class="text-6xl md:text-8xl font-black uppercase mt-4 italic tracking-tighter">Hidden <br> <span class="acid-text">Gems_</span></h1>
+            </div>
+            <div class="text-right mono text-[10px] text-zinc-500 uppercase">
+                Phase_02_Unlocked<br>Status: Encrypted
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-6xl mx-auto space-y-32">
+
+        <section class="mission-card rounded-[3rem] p-8 md:p-16" id="gem-meteora">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-16">
+                <div>
+                    <span class="mono acid-text text-sm tracking-[0.4em] uppercase">// Dossier_01</span>
+                    <h2 class="text-5xl font-black mt-4 mb-6 uppercase italic">Meteora <br> Night Ascent</h2>
+                    <p class="text-zinc-400 text-lg mb-8">Ascensione silenziosa verso i monasteri sospesi nel vuoto. Un'esperienza riservata a chi cerca il silenzio assoluto sopra la nebbia del mattino.</p>
+                    <div class="flex flex-wrap gap-4">
+                        <button onclick="decryptCoordinates('METEORA', '39.7125° N, 21.6269° E')" class="bg-white text-black px-8 py-4 rounded-full font-black uppercase hover:acid-bg transition scale-95 hover:scale-100">Richiedi Coordinate</button>
+                        <button onclick="generatePDF('Meteora')" class="border border-white/20 text-white px-8 py-4 rounded-full font-bold uppercase hover:bg-white/10 transition text-sm">Download Mission Briefing (PDF)</button>
+                    </div>
+                </div>
+                <div class="bg-black/50 p-8 rounded-3xl border border-white/5">
+                    <h3 class="mono acid-text text-xs uppercase mb-8 tracking-widest">Master Itinerary</h3>
+                    <div class="timeline-item"><h4>01:00 AM // Silent Approach</h4><p class="text-xs text-zinc-500">Trekking furtivo da Kastraki.</p></div>
+                    <div class="timeline-item"><h4>03:30 AM // The Hermit's Path</h4><p class="text-xs text-zinc-500">Scalata tecnica delle grotte sacre.</p></div>
+                    <div class="timeline-item"><h4>06:00 AM // Blue Hour Apex</h4><p class="text-xs text-zinc-500">Alba sul pilastro dello Spirito Santo.</p></div>
+                </div>
+            </div>
+        </section>
+
+        <section class="mission-card rounded-[3rem] p-8 md:p-16" id="gem-danakil">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-16">
+                <div class="bg-black/50 p-8 rounded-3xl border border-white/5 order-2 lg:order-1">
+                    <h3 class="mono acid-text text-xs uppercase mb-8 tracking-widest">Master Itinerary</h3>
+                    <div class="timeline-item"><h4>Day 1 // Salt Caravans</h4><p class="text-xs text-zinc-500">Incontro tribù Afar e cammelli.</p></div>
+                    <div class="timeline-item"><h4>Day 2 // Acid Inferno</h4><p class="text-xs text-zinc-500">Pozze di zolfo e Dallol.</p></div>
+                    <div class="timeline-item"><h4>Day 3 // Erta Ale Caldera</h4><p class="text-xs text-zinc-500">Notte sul lago di lava.</p></div>
+                </div>
+                <div class="order-1 lg:order-2">
+                    <span class="mono acid-text text-sm tracking-[0.4em] uppercase">// Dossier_02</span>
+                    <h2 class="text-5xl font-black mt-4 mb-6 uppercase italic text-orange-500">Danakil <br> Acid Pools</h2>
+                    <p class="text-zinc-400 text-lg mb-8">L'inferno sulla terra. Una danza cromatica di acidi e sali minerali nel punto più basso del continente africano.</p>
+                    <div class="flex flex-wrap gap-4">
+                        <button onclick="decryptCoordinates('DANAKIL', '14.2417° N, 40.2972° E')" class="border border-orange-500 text-orange-500 px-8 py-4 rounded-full font-black uppercase hover:bg-orange-500 hover:text-black transition">Richiedi Coordinate</button>
+                        <button onclick="generatePDF('Danakil')" class="border border-white/20 text-white px-8 py-4 rounded-full font-bold uppercase hover:bg-white/10 transition text-sm">Download Mission Briefing (PDF)</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="mission-card rounded-[3rem] p-8 md:p-16 border-dashed" id="gem-shikoku">
+            <div class="text-center max-w-2xl mx-auto">
+                <span class="mono acid-text text-sm tracking-[0.4em] uppercase">// Dossier_03</span>
+                <h2 class="text-5xl font-black mt-4 mb-8 uppercase italic">Shikoku Ghost Village</h2>
+                <p class="text-zinc-400 mb-10 italic">Un villaggio popolato da bambole a grandezza naturale. Un monumento alla solitudine rurale giapponese.</p>
+                <div class="flex flex-col items-center gap-4">
+                    <button onclick="decryptCoordinates('SHIKOKU', '33.8569° N, 133.0486° E')" class="acid-bg text-black px-12 py-5 rounded-full font-black uppercase tracking-tighter hover:bg-white transition">Richiedi Coordinate</button>
+                    <button onclick="generatePDF('Shikoku')" class="text-zinc-500 hover:text-white transition mono text-[10px] uppercase">Download Offline Report .pdf</button>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="mt-32 py-12 border-t border-white/5 text-center">
+        <a href="index.html" class="mono text-xs acid-text uppercase tracking-[0.3em] hover:opacity-50 transition">Back to Master Archive</a>
+    </footer>
+
+    <script>
+        // Progress Bar
+        window.onscroll = function() {
+            let winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+            let height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+            let scrolled = (winScroll / height) * 100;
+            document.getElementById("progress-bar").style.width = scrolled + "%";
+        };
+
+        // PDF Generation Engine
+        function generatePDF(gemKey) {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+            const date = new Date().toLocaleString();
+
+            const content = {
+                'Meteora': {
+                    title: "MISSION REPORT: METEORA NIGHT ASCENT",
+                    desc: "Obiettivo: Raggiungere le vette del settore Meteora (Grecia) eludendo i percorsi turistici standard. Terreno: Roccia arenaria altamente instabile. Visibilita: Notturna (Richiesto visore IR).",
+                    itinerary: "- 01:00 AM: Infiltrazione silenziosa da Kastraki settentrionale.\n- 02:15 AM: Arrampicata tecnica su corda fissa 'Stylos'.\n- 04:00 AM: Sosta tattica nelle grotte dei monaci eremiti.\n- 06:00 AM: Raggiungimento dell'apice per estrazione dati visivi all'alba."
+                },
+                'Danakil': {
+                    title: "MISSION REPORT: DANAKIL ACID POOLS",
+                    desc: "Obiettivo: Navigazione della depressione della Dancalia (Etiopia). Clima: Estremo (45C+). Atmosfera: Saturazione di zolfo. Equipaggiamento: Maschere filtranti obbligatorie.",
+                    itinerary: "- Giorno 1: Traversata del Lago Karum con carovane Afar.\n- Giorno 2: Campionamento visivo presso il vulcano Dallol e pozze acide.\n- Giorno 3: Salita notturna alla caldera dell'Erta Ale per monitoraggio lago di lava."
+                },
+                'Shikoku': {
+                    title: "MISSION REPORT: SHIKOKU GHOST VILLAGE",
+                    desc: "Obiettivo: Documentazione antropologica del villaggio di Nagoro (Giappone). Focus: Analisi dell'impatto psicologico delle 'Bambole Sostitutive'.",
+                    itinerary: "- Ore 09:00: Arrivo nell'area della Valle di Iya.\n- Ore 12:00: Mappatura del villaggio fantasma e delle 350+ bambole.\n- Ore 18:00: Pernottamento in residenza tradizionale isolata (Settore Foresta)."
+                }
+            };
+
+            const data = content[gemKey];
+
+            // Stile PDF Brutalista
+            doc.setFillColor(0, 0, 0);
+            doc.rect(0, 0, 210, 297, 'F');
+            doc.setTextColor(204, 255, 0); // Colore Acid
+            doc.setFont("courier", "bold");
+            doc.setFontSize(18);
+            doc.text("NOMAD // CORE_ARCHIVE 2026", 15, 20);
+            
+            doc.setFontSize(10);
+            doc.setTextColor(150, 150, 150);
+            doc.text(`TIMESTAMP: ${date}`, 15, 30);
+            doc.text("SECURITY LEVEL: PHASE_02_RESTRICTED", 15, 35);
+            doc.line(15, 40, 195, 40);
+
+            doc.setTextColor(255, 255, 255);
+            doc.setFontSize(14);
+            doc.text(data.title, 15, 55);
+
+            doc.setFontSize(10);
+            doc.setFont("courier", "normal");
+            const splitDesc = doc.splitTextToSize(data.desc, 180);
+            doc.text(splitDesc, 15, 70);
+
+            doc.setTextColor(204, 255, 0);
+            doc.text("--- MASTER ITINERARY ---", 15, 100);
+            doc.setTextColor(255, 255, 255);
+            doc.text(data.itinerary, 15, 110);
+
+            doc.setFontSize(8);
+            doc.setTextColor(100, 100, 100);
+            doc.text("QUESTO DOCUMENTO SI AUTO-DISTRUGGERA' NELLA TUA MEMORIA.", 15, 280);
+
+            doc.save(`NOMAD_MISSION_${gemKey.toUpperCase()}.pdf`);
+        }
+
+        // Hacker Decrypt Animation
+        function decryptCoordinates(missionName, coords) {
+            const overlay = document.getElementById('terminal-overlay');
+            const content = document.getElementById('terminal-content');
+            overlay.style.display = 'flex';
+            content.innerHTML = '';
+            const logs = [`> INIT...`, `> TARGET: ${missionName}`, `> BYPASSING FIREWALL...`, `> COORDS: ${coords}`, `> READY.`];
+            let i = 0;
+            const interval = setInterval(() => {
+                if (i < logs.length) {
+                    const p = document.createElement('p');
+                    p.innerText = logs[i];
+                    content.appendChild(p);
+                    i++;
+                } else {
+                    clearInterval(interval);
+                    setTimeout(() => {
+                        overlay.style.display = 'none';
+                        window.location.href = `mailto:ops@nomad.sys?subject=MISSION_${missionName}`;
+                    }, 1000);
+                }
+            }, 500);
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NOMAD | Master Archive 2026</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Mono&family=Plus+Jakarta+Sans:wght@300;800&display=swap" rel="stylesheet">
+    <style>
+        :root { --acid: #ccff00; --dark: #070707; --sale: #ff3e00; }
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background: var(--dark); color: #fff; scroll-behavior: smooth; }
+        .mono { font-family: 'Space Mono', monospace; }
+        .acid-text { color: var(--acid); }
+        .acid-bg { background: var(--acid); }
+        .sale-text { color: var(--sale); }
+        
+        .glass { background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.05); }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        
+        .pulse-sale { animation: pulse 1.5s infinite; }
+        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.4; } 100% { opacity: 1; } }
+
+        #secret-vault, #modal-booking { display: none; background: rgba(0,0,0,0.98); backdrop-filter: blur(30px); z-index: 3000; }
+        
+        .desc-hidden { max-height: 0; opacity: 0; transition: all 0.5s ease; overflow: hidden; }
+        .group:hover .desc-hidden { max-height: 100px; opacity: 1; margin-top: 1rem; }
+
+        #toast { position: fixed; bottom: 20px; right: 20px; background: var(--acid); color: #000; padding: 15px 25px; border-radius: 10px; font-weight: bold; transform: translateY(150%); transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); z-index: 5000; }
+        #toast.active { transform: translateY(0); }
+    </style>
+</head>
+<body>
+
+    <div id="toast" class="mono text-xs uppercase tracking-widest">Coordinata Estratta_</div>
+
+    <nav class="fixed w-full z-[1000] p-4 glass flex justify-between items-center">
+        <div class="mono text-xl font-bold acid-text tracking-tighter cursor-pointer" onclick="window.scrollTo(0,0)">NOMAD//CORE</div>
+        <div class="hidden md:flex gap-8 text-[10px] font-bold uppercase tracking-widest items-center">
+            <a href="#sales" class="sale-text pulse-sale">● Live_Sales</a>
+            <a href="#archive" class="hover:acid-text transition">Database</a>
+            <a href="prossima_pagina.html" class="px-3 py-1 border border-acid-bg rounded text-acid-bg hover:bg-acid-bg hover:text-black transition uppercase">Phase_02_Gems</a>
+            <button onclick="showSecret()" class="opacity-20 hover:opacity-100 transition text-[8px] animate-pulse">Unlocking_Vault...</button>
+        </div>
+        <button onclick="openBooking()" class="acid-bg text-black px-6 py-2 rounded-full font-black text-xs uppercase transition hover:scale-105 active:scale-95">Prenota</button>
+    </nav>
+
+    <header class="min-h-screen flex flex-col justify-center px-8 relative overflow-hidden">
+        <div class="absolute top-20 right-[-10%] text-[30vw] font-black opacity-[0.02] pointer-events-none select-none">2026</div>
+        <h1 class="text-[14vw] leading-[0.8] font-black uppercase tracking-tighter">
+            Archive <br> <span class="acid-text italic">Unfolded.</span>
+        </h1>
+        <p class="mt-8 max-w-xl text-zinc-500 text-lg">
+            Accesso autorizzato al database NOMAD. Esplora le anomalie geografiche e i glitch di prezzo nel sistema prima del prossimo wipe di memoria.
+        </p>
+        <a href="prossima_pagina.html" class="inline-flex items-center gap-3 mt-10 px-8 py-4 acid-bg text-black font-black text-sm uppercase tracking-widest rounded-full hover:scale-105 active:scale-95 transition-transform cursor-pointer select-none" style="min-height:48px;">
+            Phase_02_Gems <span class="text-lg">→</span>
+        </a>
+    </header>
+
+    <section id="sales" class="py-20 bg-zinc-900/20 border-y border-white/5">
+        <div class="px-8 mb-10 flex justify-between items-center">
+            <h2 class="text-4xl font-black uppercase sale-text italic">Sconti di Sistema_</h2>
+            <div class="mono text-xs bg-white/5 px-4 py-2 rounded">TIMER: <span id="timer" class="sale-text">04:59:59</span></div>
+        </div>
+        <div class="flex overflow-x-auto gap-6 px-8 no-scrollbar pb-10">
+            <div class="min-w-[300px] glass p-8 rounded-[2rem] border-l-4 border-l-[#ff3e00]">
+                <span class="text-[10px] mono text-zinc-500 uppercase">Drop #001</span>
+                <h3 class="text-2xl font-black mt-2 uppercase">Almaty Lake</h3>
+                <p class="text-xs text-zinc-400 mb-4">Kazakistan / Brutal Nature</p>
+                <div class="flex items-end gap-3">
+                    <span class="text-zinc-600 line-through text-lg">€1.200</span>
+                    <span class="text-4xl font-black sale-text">€690</span>
+                </div>
+                <button onclick="selectAndNotify('Almaty Lake')" class="w-full mt-6 py-3 border border-[#ff3e00] text-[#ff3e00] rounded-xl font-bold hover:bg-[#ff3e00] hover:text-white transition uppercase text-xs">Reclama</button>
+            </div>
+            <div class="min-w-[300px] glass p-8 rounded-[2rem] border-l-4 border-l-[#ff3e00]">
+                <span class="text-[10px] mono text-zinc-500 uppercase">Drop #005</span>
+                <h3 class="text-2xl font-black mt-2 uppercase">Siwa Salt</h3>
+                <p class="text-xs text-zinc-400 mb-4">Egitto / Deep Desert</p>
+                <div class="flex items-end gap-3">
+                    <span class="text-zinc-600 line-through text-lg">€1.450</span>
+                    <span class="text-4xl font-black sale-text">€880</span>
+                </div>
+                <button onclick="selectAndNotify('Siwa Salt')" class="w-full mt-6 py-3 border border-[#ff3e00] text-[#ff3e00] rounded-xl font-bold hover:bg-[#ff3e00] hover:text-white transition uppercase text-xs">Reclama</button>
+            </div>
+        </div>
+    </section>
+
+    <section id="archive" class="py-32 px-8">
+        <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-20 gap-6">
+            <h2 class="text-6xl font-black uppercase tracking-tighter">The Database_</h2>
+            <div class="flex gap-4">
+                <button onclick="filterPrice(1000)" class="px-4 py-2 border border-white/10 rounded-full text-[10px] uppercase font-bold hover:acid-bg hover:text-black transition">Under €1000</button>
+                <button onclick="filterPrice(5000)" class="px-4 py-2 border border-white/10 rounded-full text-[10px] uppercase font-bold hover:acid-bg hover:text-black transition">Tutti</button>
+            </div>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4" id="master-grid"></div>
+    </section>
+
+    <div id="modal-booking" class="fixed inset-0 flex items-center justify-center p-6">
+        <div class="max-w-lg w-full glass p-10 rounded-[3rem] text-center">
+            <h2 class="text-3xl font-black uppercase acid-text mb-4">Exporting Ticket_</h2>
+            <p class="mono text-[10px] text-zinc-500 mb-8">Inserisci il tuo ID Agente per generare il documento di viaggio criptato in PDF.</p>
+            <input type="text" id="user-name" placeholder="NOME AGENTE" class="w-full bg-zinc-900 border border-zinc-800 p-4 rounded-2xl mono text-sm mb-4 outline-none focus:border-acid-bg">
+            <button onclick="generateBookingPDF()" class="w-full acid-bg text-black font-black py-4 rounded-2xl uppercase tracking-tighter hover:invert transition">Genera PDF di Prenotazione</button>
+            <button onclick="closeBooking()" class="mt-6 text-[10px] text-zinc-600 uppercase border-b border-zinc-800 pb-1">Annulla</button>
+        </div>
+    </div>
+
+    <div id="secret-vault" class="fixed inset-0 z-[2000] p-10 flex flex-col items-center justify-start overflow-y-auto">
+        <div class="max-w-6xl w-full">
+            <h2 class="text-4xl md:text-6xl font-black sale-text mb-4 animate-pulse tracking-[0.2em] mt-10 text-center uppercase italic">Deep_Access_Unlocked</h2>
+            <p class="mono text-center text-zinc-500 text-xs mb-12 uppercase">Coordinate protette da protocollo militare. Estrazione solo per agenti Livello 5.</p>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-20" id="secret-grid">
+                </div>
+            
+            <div class="flex justify-center mb-20">
+                <button onclick="closeSecret()" class="text-xs border-b border-red-500 text-red-500 pb-2 uppercase tracking-widest hover:text-white transition">Chiudi Terminale Segreto</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const destinations = [
+            { name: "Socotra", loc: "Yemen", price: 2900, tag: "RARE", desc: "Alberi del sangue di drago e dune bianche aliene." },
+            { name: "Svalbard", loc: "Norvegia", price: 3100, tag: "ARCTIC", desc: "Minieri artiche e il silenzio dei ghiacciai perenni." },
+            { name: "Uyuni", loc: "Bolivia", price: 1800, tag: "HOT", desc: "Il deserto di sale che riflette l'infinito del cosmo." },
+            { name: "Faroe", loc: "Danimarca", price: 1300, tag: "NEW", desc: "Venti brutali e scogliere a picco sul nord atlantico." },
+            { name: "Gobi", loc: "Mongolia", price: 950, tag: "BUDGET", desc: "Notti in yurta sotto la via lattea più nitida del mondo." },
+            { name: "Kamchatka", loc: "Russia", price: 4200, tag: "EXTREME", desc: "Terra di vulcani attivi, geyser e orsi bruni giganti." },
+            { name: "Zion", loc: "USA", price: 1600, tag: "WILD", desc: "Canyon stretti e vette di roccia rossa infuocata." },
+            { name: "Lofoten", loc: "Norvegia", price: 2200, tag: "COOL", desc: "Picchi che emergono dal mare e aurore invernali." },
+            { name: "Petra", loc: "Giordania", price: 890, tag: "FLASH", desc: "L'antica città scavata nell'arenaria rosa." },
+            { name: "Ladakh", loc: "India", price: 1100, tag: "ZEN", desc: "Monasteri tibetani tra le vette dell'Himalaya." },
+            { name: "Azores", loc: "Portogallo", price: 920, tag: "NEAR", desc: "Paradiso verde nel cuore dell'oceano atlantico." },
+            { name: "Varanasi", loc: "India", price: 680, tag: "SOUL", desc: "Rituali millenari sulle rive del fiume sacro Gange." }
+        ];
+
+        const secretDestinations = [
+            { name: "Chernobyl", loc: "Ukraine", price: 1800, desc: "Pernottamento nel cuore della Zona di Alienazione di Pripyat." },
+            { name: "Pyongyang", loc: "North Korea", price: 3400, desc: "Accesso sotterraneo e tour dei monumenti brutalisti proibiti." },
+            { name: "Sentinel Island", loc: "Andaman", price: 5000, desc: "Osservazione offshore a distanza di sicurezza tribù non contattate." },
+            { name: "Snake Island", loc: "Brazil", price: 1500, desc: "Sbarco rapido in area ad alta densità di Bothrops insularis." },
+            { name: "Area 51", loc: "USA", price: 2200, desc: "Pattugliamento notturno perimetro Groom Lake con visione termica." },
+            { name: "Vatikan Vaults", loc: "Vatican", price: 4100, desc: "Infiltrazione notturna negli archivi segreti non censiti." },
+            { name: "Mount Weather", loc: "USA", price: 6000, desc: "Esplorazione perimetrale bunker continuità governativa." },
+            { name: "Svalbard Seed", loc: "Arctic", price: 2800, desc: "Accesso tunnel d'ingresso banca mondiale dei semi (Doomsday)." },
+            { name: "Fukushima", loc: "Japan", price: 1900, desc: "Esplorazione urbana 'Red Zone' città fantasma di Namie." },
+            { name: "Kowloon Wall", loc: "Cyber", price: 3200, desc: "Ricostruzione AR fisica dei bassifondi di Hong Kong." },
+            { name: "Point Nemo", loc: "Ocean", price: 9900, desc: "Spedizione verso il punto più remoto del pianeta." },
+            { name: "Darvaza Gas", loc: "Turkmenistan", price: 1400, desc: "Accampamento sul bordo della Porta dell'Inferno." }
+        ];
+
+        let selectedDest = "NON_SELEZIONATA";
+
+        function renderGrid(data) {
+            const grid = document.getElementById('master-grid');
+            grid.innerHTML = data.map(d => `
+                <div class="glass p-8 rounded-[2.5rem] flex flex-col justify-between hover:border-acid-bg transition-all group cursor-pointer" onclick="selectAndNotify('${d.name}')">
+                    <div>
+                        <div class="flex justify-between items-start mb-4">
+                            <span class="mono text-[8px] text-zinc-600">ID#${Math.floor(Math.random()*900)}</span>
+                            <span class="text-[9px] font-black acid-text border border-zinc-800 px-2 py-1 rounded">${d.tag}</span>
+                        </div>
+                        <h3 class="text-2xl font-black uppercase group-hover:acid-text transition">${d.name}</h3>
+                        <p class="text-[10px] text-zinc-500 uppercase mt-1 tracking-widest">${d.loc}</p>
+                        <p class="desc-hidden text-xs text-zinc-400 italic">${d.desc}</p>
+                    </div>
+                    <div class="mt-8 pt-6 border-t border-white/5 flex justify-between items-center">
+                        <span class="text-xl font-bold">€${d.price}</span>
+                        <div class="w-8 h-8 rounded-full border border-zinc-800 flex items-center justify-center group-hover:bg-acid-bg group-hover:text-black group-hover:border-acid-bg transition">→</div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function renderSecretGrid() {
+            const grid = document.getElementById('secret-grid');
+            grid.innerHTML = secretDestinations.map(d => `
+                <div class="p-6 border border-red-900/30 bg-red-950/10 rounded-3xl cursor-pointer hover:bg-red-600/20 transition group" onclick="selectAndNotify('${d.name}')">
+                    <h3 class="text-xl font-bold text-red-500 uppercase group-hover:text-white transition">Sector: ${d.name}</h3>
+                    <p class="text-[10px] mono text-zinc-500 mt-2 uppercase tracking-tighter">${d.loc}</p>
+                    <p class="text-xs text-zinc-400 mt-4 italic opacity-0 group-hover:opacity-100 transition">${d.desc}</p>
+                    <div class="mt-4 flex justify-between items-center">
+                        <span class="mono text-red-500 text-xs">€${d.price}</span>
+                        <span class="text-[8px] text-red-900 font-bold uppercase">Restricted_Access</span>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function selectAndNotify(name) {
+            selectedDest = name;
+            const toast = document.getElementById('toast');
+            toast.innerText = `SELEZIONATO: ${name.toUpperCase()}`;
+            toast.classList.add('active');
+            setTimeout(() => toast.classList.remove('active'), 3000);
+        }
+
+        function openBooking() { document.getElementById('modal-booking').style.display = 'flex'; }
+        function closeBooking() { document.getElementById('modal-booking').style.display = 'none'; }
+
+        function generateBookingPDF() {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+            const agent = document.getElementById('user-name').value || "INCognito_AGENT";
+            const date = new Date().toLocaleString();
+            
+            const allDest = [...destinations, ...secretDestinations];
+            const destInfo = allDest.find(d => d.name === selectedDest) || { loc: "Unknown", price: "N/A", desc: "Dati Criptati." };
+
+            doc.setFillColor(0, 0, 0);
+            doc.rect(0, 0, 210, 297, 'F');
+            doc.setTextColor(204, 255, 0);
+            doc.setFont("courier", "bold");
+            doc.setFontSize(22);
+            doc.text("NOMAD // CONFIRMATION_REPORT", 15, 30);
+            
+            doc.setFontSize(10);
+            doc.setTextColor(150, 150, 150);
+            doc.text(`DATE: ${date}`, 15, 45);
+            doc.text(`AGENT ID: ${agent.toUpperCase()}`, 15, 50);
+            doc.line(15, 55, 195, 55);
+
+            doc.setTextColor(255, 255, 255);
+            doc.setFontSize(16);
+            doc.text(`DESTINATION: ${selectedDest.toUpperCase()}`, 15, 75);
+            doc.setFontSize(12);
+            doc.text(`LOCATION: ${destInfo.loc}`, 15, 85);
+            doc.text(`TOTAL CREDIT: EUR ${destInfo.price}`, 15, 95);
+
+            doc.setTextColor(204, 255, 0);
+            doc.text("--- BRIEFING ---", 15, 120);
+            doc.setTextColor(255, 255, 255);
+            const splitDesc = doc.splitTextToSize(destInfo.desc, 170);
+            doc.text(splitDesc, 15, 130);
+
+            doc.setFontSize(8);
+            doc.setTextColor(100, 100, 100);
+            doc.text("DOCUMENTO GENERATO TRAMITE NOMAD CORE. VALIDITA' TEMPORANEA 24H.", 15, 280);
+
+            doc.save(`NOMAD_BOOKING_${selectedDest.toUpperCase()}.pdf`);
+            closeBooking();
+        }
+
+        function filterPrice(max) {
+            const filtered = destinations.filter(d => d.price <= max);
+            renderGrid(filtered);
+        }
+
+        let time = 18000;
+        setInterval(() => {
+            time--;
+            let hours = Math.floor(time / 3600);
+            let mins = Math.floor((time % 3600) / 60);
+            let secs = time % 60;
+            const t = document.getElementById('timer');
+            if(t) t.innerText = `${hours.toString().padStart(2,'0')}:${mins.toString().padStart(2,'0')}:${secs.toString().padStart(2,'0')}`;
+        }, 1000);
+
+        function showSecret() { 
+            document.getElementById('secret-vault').style.display = 'block'; 
+            renderSecretGrid();
+        }
+        function closeSecret() { document.getElementById('secret-vault').style.display = 'none'; }
+
+        renderGrid(destinations);
+    </script>
+</body>
+</html>
