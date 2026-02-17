@@ -35,61 +35,23 @@
 
         /* Itinerary selection style */
         .itinerary-option.selected { border-color: var(--acid); background: rgba(204, 255, 0, 0.05); }
-
-        /* Mobile Menu Transitions */
-        #mobile-menu { transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
-        .menu-open { overflow: hidden; }
     </style>
 </head>
 <body>
 
     <div id="toast" class="mono text-xs uppercase tracking-widest">Coordinata Estratta_</div>
 
-    <nav class="fixed w-full z-[4000] p-4 glass flex justify-between items-center">
-        <div class="mono text-xl font-bold acid-text tracking-tighter cursor-pointer z-[4002]" onclick="window.scrollTo(0,0); closeMobileMenu()">NOMAD//CORE</div>
-        
+    <nav class="fixed w-full z-[1000] p-4 glass flex justify-between items-center">
+        <div class="mono text-xl font-bold acid-text tracking-tighter cursor-pointer" onclick="window.scrollTo(0,0)">NOMAD//CORE</div>
         <div class="hidden md:flex gap-8 text-[10px] font-bold uppercase tracking-widest items-center">
-            <a href="#sales" class="sale-text pulse-sale hover:scale-110 transition-transform">● Live_Sales</a>
-            <a href="#archive" class="hover:acid-text transition hover:scale-110">Database</a>
-            <button onclick="showSecret()" class="opacity-40 hover:opacity-100 transition text-[9px] animate-pulse hover:acid-text">Unblocking_Vault</button>
-            <a href="#" class="px-4 py-1 border border-acid-bg rounded text-acid-bg hover:bg-acid-bg hover:text-black transition uppercase">Phase_02_Gems</a>
+            <a href="#sales" class="sale-text pulse-sale">● Live_Sales</a>
+            <a href="#archive" class="hover:acid-text transition">Database</a>
+            <a href="#" class="px-3 py-1 border border-acid-bg rounded text-acid-bg hover:bg-acid-bg hover:text-black transition uppercase">Phase_02_Gems</a>
+            <button onclick="showSecret()" class="opacity-20 hover:opacity-100 transition text-[8px] animate-pulse">Unlocking_Vault...</button>
         </div>
-
-        <div class="flex items-center gap-4 z-[4002]">
-            <button onclick="openBooking()" class="acid-bg text-black px-5 py-2 rounded-full font-black text-[10px] md:text-xs uppercase transition hover:scale-105 active:scale-95">Prenota</button>
-            
-            <button onclick="toggleMobileMenu()" class="md:hidden flex flex-col gap-1.5 p-2 group">
-                <span id="burger-1" class="w-6 h-0.5 bg-white transition-all duration-300 group-hover:bg-acid-bg"></span>
-                <span id="burger-2" class="w-4 h-0.5 bg-white ml-auto transition-all duration-300 group-hover:w-6 group-hover:bg-acid-bg"></span>
-            </button>
-        </div>
-
-        <div id="mobile-menu" class="fixed inset-0 bg-black/95 backdrop-blur-xl z-[4001] flex flex-col justify-center items-start px-10 gap-8 transform translate-x-full md:hidden">
-            <div class="absolute top-0 left-0 w-full h-full opacity-10 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] pointer-events-none"></div>
-            
-            <p class="mono text-xs text-zinc-600 mb-4">SYSTEM_NAVIGATION //</p>
-            
-            <a href="#sales" onclick="closeMobileMenu()" class="text-4xl font-black uppercase text-white hover:text-sale hover:pl-4 transition-all duration-300 flex items-center gap-4">
-                <span class="text-xs mono sale-text">01</span> Live_Sales <span class="pulse-sale text-xs text-sale">●</span>
-            </a>
-            
-            <a href="#archive" onclick="closeMobileMenu()" class="text-4xl font-black uppercase text-white hover:acid-text hover:pl-4 transition-all duration-300 flex items-center gap-4">
-                <span class="text-xs mono text-zinc-600">02</span> Database
-            </a>
-            
-            <button onclick="closeMobileMenu(); showSecret()" class="text-4xl font-black uppercase text-zinc-500 hover:text-white hover:pl-4 transition-all duration-300 flex items-center gap-4 text-left">
-                <span class="text-xs mono text-zinc-600">03</span> Unblocking
-            </button>
-            
-            <div class="w-full h-px bg-white/10 my-4"></div>
-            
-            <a href="#" onclick="closeMobileMenu()" class="text-2xl font-bold uppercase acid-text hover:text-white hover:pl-4 transition-all duration-300 border border-acid-bg px-6 py-4 rounded-xl w-full text-center">
-                Phase_02_Gems →
-            </a>
-
-            <p class="absolute bottom-10 left-10 text-[10px] text-zinc-700 mono">NOMAD SYSTEMS © 2026</p>
-        </div>
+        <button onclick="openBooking()" class="acid-bg text-black px-6 py-2 rounded-full font-black text-xs uppercase transition hover:scale-105 active:scale-95">Prenota</button>
     </nav>
+
     <header class="min-h-screen flex flex-col justify-center px-8 relative overflow-hidden">
         <div class="absolute top-20 right-[-10%] text-[30vw] font-black opacity-[0.02] pointer-events-none select-none">2026</div>
         <h1 class="text-[14vw] leading-[0.8] font-black uppercase tracking-tighter">
@@ -794,39 +756,6 @@
             renderSecretGrid();
         }
         function closeSecret() { document.getElementById('secret-vault').style.display = 'none'; }
-
-        // --- NEW MENU LOGIC ---
-        function toggleMobileMenu() {
-            const menu = document.getElementById('mobile-menu');
-            const burger1 = document.getElementById('burger-1');
-            const burger2 = document.getElementById('burger-2');
-            
-            if(menu.classList.contains('translate-x-full')) {
-                // Open
-                menu.classList.remove('translate-x-full');
-                menu.classList.add('translate-x-0');
-                document.body.classList.add('menu-open');
-                // Burger animation
-                burger1.classList.add('rotate-45', 'translate-y-2');
-                burger2.classList.add('-rotate-45', '-translate-y-1', 'w-6');
-            } else {
-                // Close
-                menu.classList.add('translate-x-full');
-                menu.classList.remove('translate-x-0');
-                document.body.classList.remove('menu-open');
-                // Burger reset
-                burger1.classList.remove('rotate-45', 'translate-y-2');
-                burger2.classList.remove('-rotate-45', '-translate-y-1', 'w-6');
-                burger2.classList.add('ml-auto');
-            }
-        }
-
-        function closeMobileMenu() {
-            const menu = document.getElementById('mobile-menu');
-            if(!menu.classList.contains('translate-x-full')) {
-                toggleMobileMenu();
-            }
-        }
 
         // Init
         renderGrid(destinations);
