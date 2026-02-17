@@ -250,7 +250,7 @@
                 lat: 25.3176, lng: 82.9739,
                 price: 680, 
                 tag: "SOUL", 
-                desc: "La città della luce, Kashi. Una delle città abitate più antiche del mondo, dove la vita e la morte sono esposte pubblicamente sui ghat del fiume sacro Gange. Un'esperienza sensoriale intensa, caotica e spirituale.<br><br><strong>ITINERARIO:</strong><br> - Giorno 1: Giro in barca a remi all'alba lungo i Ghat per osservare i rituali di purificazione dei pellegrini.<br> - Giorno 2: Partecipazione (rispettosa) alla cerimonia del fuoco Ganga Aarti al tramonto presso il Dashashwamedh Ghat.<br> - Giorno 3: Escursione al sito archeologico di Sarnath, dove il Buddha predicò il suo primo sermone dopo l'illuminazione." 
+                desc: "La città della luce, Kashi. Una delle città abitate più antiche del mondo, dove la vita e la morte sono esposte pubblicamente sui ghat del fiume sacro Gange. Un'esperienza sensoriale intensa, caotica e spirituale.<br><br><strong>ITINERARIO:</strong><br> - Giorno 1: Giro in barca a remi all'alba lungo i Ghat per osservare i rituali di purificazione dei pellegrini.<br> - Giorno 2: Partecipazione (rispettosa) alla cerimonia del fuoco Ganga Aarti al tramonto presso il Dashashwamedh Ghat.<br> - Giorno 3: Esplorazione al sito archeologico di Sarnath, dove il Buddha predicò il suo primo sermone dopo l'illuminazione." 
             }
         ];
 
@@ -274,22 +274,18 @@
 
         // MAP INITIALIZATION
         function initMap() {
-            // Center map roughly on world view
             var map = L.map('map-container').setView([20, 0], 2);
 
-            // Dark Matter Tiles (CartoDB)
             L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
                 attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
                 subdomains: 'abcd',
                 maxZoom: 19
             }).addTo(map);
 
-            // Add Markers
             destinations.forEach(dest => {
                 if(dest.lat && dest.lng) {
                     const marker = L.marker([dest.lat, dest.lng]).addTo(map);
                     
-                    // Custom Popup Content
                     const popupContent = `
                         <div class="text-left">
                             <h3 class="font-bold text-[#ccff00] text-lg uppercase">${dest.name}</h3>
@@ -358,46 +354,95 @@
         function generateBookingPDF() {
             const { jsPDF } = window.jspdf;
             const doc = new jsPDF();
-            const agent = document.getElementById('user-name').value || "INCognito_AGENT";
-            const date = new Date().toLocaleString();
+            const agent = document.getElementById('user-name').value || "ANONYMOUS_NOMAD";
+            const date = new Date().toLocaleDateString('it-IT');
+            const bookingId = "NM-" + Math.random().toString(36).substr(2, 9).toUpperCase();
             
-            const allDest = [...destinations, ...secretDestinations];
-            // Remove HTML tags for PDF text
-            const destInfo = allDest.find(d => d.name === selectedDest) || { loc: "Unknown", price: "N/A", desc: "Dati Criptati." };
+            const allDest = [...destinations, ...secretDestinations, 
+                {name: "Almaty Lake", loc: "Kazakistan", price: 690, desc: "Un'anomalia turchese..."}, 
+                {name: "Siwa Salt", loc: "Egitto", price: 880, desc: "L'oasi più remota..."}];
+            
+            const destInfo = allDest.find(d => d.name === selectedDest) || { loc: "Unknown Sector", price: 0, desc: "No data available." };
             const cleanDesc = destInfo.desc.replace(/<[^>]*>?/gm, '');
 
-            doc.setFillColor(0, 0, 0);
-            doc.rect(0, 0, 210, 297, 'F');
+            // --- HEADER ---
+            doc.setFillColor(7, 7, 7);
+            doc.rect(0, 0, 210, 40, 'F');
             doc.setTextColor(204, 255, 0);
-            doc.setFont("courier", "bold");
-            doc.setFontSize(22);
-            doc.text("NOMAD // CONFIRMATION_REPORT", 15, 30);
+            doc.setFont("helvetica", "bold");
+            doc.setFontSize(28);
+            doc.text("NOMAD", 15, 25);
+            doc.setFontSize(10);
+            doc.setTextColor(255, 255, 255);
+            doc.text("MASTER ARCHIVE // TRAVEL CONFIRMATION", 15, 33);
+            
+            doc.setTextColor(150, 150, 150);
+            doc.setFontSize(9);
+            doc.text(`Booking ID: ${bookingId}`, 150, 20);
+            doc.text(`Issued: ${date}`, 150, 25);
+
+            // --- AGENT INFO ---
+            doc.setTextColor(0, 0, 0);
+            doc.setFontSize(12);
+            doc.text("DETTAGLI VIAGGIATORE", 15, 55);
+            doc.line(15, 57, 195, 57);
+            doc.setFontSize(10);
+            doc.text(`Agente: ${agent.toUpperCase()}`, 15, 65);
+            doc.text(`Stato: Autorizzato / Livello 5`, 15, 70);
+            doc.text(`Email: ${agent.toLowerCase().replace(' ', '.')}@nomad.core`, 15, 75);
+
+            // --- DESTINATION INFO ---
+            doc.setFillColor(245, 245, 245);
+            doc.rect(15, 85, 180, 45, 'F');
+            doc.setFontSize(12);
+            doc.text("DETTAGLI DESTINAZIONE", 20, 95);
+            doc.setFontSize(18);
+            doc.setTextColor(255, 62, 0); // Sale color
+            doc.text(selectedDest.toUpperCase(), 20, 107);
+            doc.setFontSize(11);
+            doc.setTextColor(80, 80, 80);
+            doc.text(`${destInfo.loc} // Coordinate Sincronizzate`, 20, 115);
+            doc.text(`Tipologia: Expedizione Nomad Core`, 20, 122);
+
+            // --- ITINERARY / DESCRIPTION ---
+            doc.setTextColor(0, 0, 0);
+            doc.setFontSize(12);
+            doc.text("PIANO DI VIAGGIO & BRIEFING OPERATIVO", 15, 145);
+            doc.line(15, 147, 195, 147);
+            doc.setFontSize(9);
+            const splitDesc = doc.splitTextToSize(cleanDesc, 175);
+            doc.text(splitDesc, 15, 155);
+
+            // --- PRICING TABLE ---
+            let yPos = 160 + (splitDesc.length * 4);
+            if (yPos > 220) { doc.addPage(); yPos = 30; }
+
+            doc.setFontSize(12);
+            doc.text("RIEPILOGO COSTI", 15, yPos);
+            doc.line(15, yPos + 2, 195, yPos + 2);
             
             doc.setFontSize(10);
-            doc.setTextColor(150, 150, 150);
-            doc.text(`DATE: ${date}`, 15, 45);
-            doc.text(`AGENT ID: ${agent.toUpperCase()}`, 15, 50);
-            doc.line(15, 55, 195, 55);
-
-            doc.setTextColor(255, 255, 255);
-            doc.setFontSize(16);
-            doc.text(`DESTINATION: ${selectedDest.toUpperCase()}`, 15, 75);
-            doc.setFontSize(12);
-            doc.text(`LOCATION: ${destInfo.loc}`, 15, 85);
-            doc.text(`TOTAL CREDIT: EUR ${destInfo.price}`, 15, 95);
-
-            doc.setTextColor(204, 255, 0);
-            doc.text("--- BRIEFING ---", 15, 120);
-            doc.setTextColor(255, 255, 255);
+            doc.text("Tariffa Base Expedizione", 15, yPos + 12);
+            doc.text(`EUR ${destInfo.price}`, 170, yPos + 12);
+            doc.text("Tasse Aeroportuali & Permessi", 15, yPos + 18);
+            doc.text("INCLUSO", 170, yPos + 18);
+            doc.text("VAT (22%)", 15, yPos + 24);
+            doc.text(`EUR ${(destInfo.price * 0.22).toFixed(2)}`, 170, yPos + 24);
             
-            const splitDesc = doc.splitTextToSize(cleanDesc, 170);
-            doc.text(splitDesc, 15, 130);
+            doc.setFillColor(204, 255, 0);
+            doc.rect(140, yPos + 30, 55, 12, 'F');
+            doc.setFontSize(12);
+            doc.text("TOTALE", 145, yPos + 38);
+            doc.text(`EUR ${destInfo.price}`, 170, yPos + 38);
 
+            // --- LEGAL NOTES ---
             doc.setFontSize(8);
-            doc.setTextColor(100, 100, 100);
-            doc.text("DOCUMENTO GENERATO TRAMITE NOMAD CORE. VALIDITA' TEMPORANEA 24H.", 15, 280);
+            doc.setTextColor(150, 150, 150);
+            const legal = "Note Legali: La presente prenotazione è soggetta ai termini di Nomad Ltd. Il viaggio verso zone 'Classified' o 'Secret' comporta l'accettazione del protocollo di rischio Alpha. Nessun rimborso è previsto in caso di wipe del sistema o eventi di forza maggiore geopolitica. Assicurazione contro glitch temporali non inclusa.";
+            const splitLegal = doc.splitTextToSize(legal, 180);
+            doc.text(splitLegal, 15, 275);
 
-            doc.save(`NOMAD_BOOKING_${selectedDest.toUpperCase()}.pdf`);
+            doc.save(`NOMAD_CONFIRMATION_${selectedDest.toUpperCase()}.pdf`);
             closeBooking();
         }
 
@@ -422,10 +467,7 @@
         }
         function closeSecret() { document.getElementById('secret-vault').style.display = 'none'; }
 
-        // Start App
         renderGrid(destinations);
-        
-        // Initialize Map after slight delay to ensure container exists
         setTimeout(initMap, 500);
     </script>
 </body>
