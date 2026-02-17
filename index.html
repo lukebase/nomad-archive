@@ -30,6 +30,10 @@
 
         #secret-vault, #modal-booking { display: none; background: rgba(0,0,0,0.98); backdrop-filter: blur(30px); z-index: 3000; }
         
+        /* Mobile Menu Style */
+        #mobile-menu { display: none; }
+        #mobile-menu.active { display: flex; }
+
         /* Expanded description styles */
         .desc-hidden { max-height: 0; opacity: 0; transition: all 0.5s ease; overflow: hidden; }
         .group:hover .desc-hidden { max-height: 500px; opacity: 1; margin-top: 1rem; }
@@ -50,6 +54,7 @@
 
     <nav class="fixed w-full z-[1000] p-4 glass flex justify-between items-center">
         <div class="mono text-xl font-bold acid-text tracking-tighter cursor-pointer" onclick="window.scrollTo(0,0)">NOMAD//CORE</div>
+        
         <div class="hidden md:flex gap-8 text-[10px] font-bold uppercase tracking-widest items-center">
             <a href="#sales" class="sale-text pulse-sale">● Live_Sales</a>
             <a href="#map-section" class="hover:acid-text transition">Nomad_Map</a>
@@ -57,8 +62,24 @@
             <a href="prossima_pagina.html" class="px-3 py-1 border border-acid-bg rounded text-acid-bg hover:bg-acid-bg hover:text-black transition uppercase">Phase_02_Gems</a>
             <button onclick="showSecret()" class="opacity-20 hover:opacity-100 transition text-[8px] animate-pulse">Unlocking_Vault...</button>
         </div>
-        <button onclick="openBooking()" class="acid-bg text-black px-6 py-2 rounded-full font-black text-xs uppercase transition hover:scale-105 active:scale-95">Prenota</button>
+
+        <div class="flex items-center gap-4">
+            <button onclick="openBooking()" class="acid-bg text-black px-6 py-2 rounded-full font-black text-xs uppercase transition hover:scale-105 active:scale-95">Prenota</button>
+            <button onclick="toggleMobileMenu()" class="md:hidden text-acid-text border border-acid-bg px-3 py-1 rounded font-black tracking-tighter hover:bg-acid-bg hover:text-black transition">///</button>
+        </div>
     </nav>
+
+    <div id="mobile-menu" class="fixed inset-0 bg-black/95 backdrop-blur-xl z-[900] flex-col justify-center items-center gap-8 text-center">
+        <button onclick="toggleMobileMenu()" class="absolute top-6 right-6 text-zinc-500 hover:text-white uppercase text-xs tracking-widest">Close [X]</button>
+        
+        <h2 class="text-4xl font-black acid-text mb-4 tracking-tighter">SYSTEM_NAV</h2>
+        
+        <a href="#sales" onclick="toggleMobileMenu()" class="sale-text pulse-sale text-xl font-bold uppercase tracking-widest">● Live_Sales</a>
+        <a href="#map-section" onclick="toggleMobileMenu()" class="text-white hover:acid-text text-xl font-bold uppercase tracking-widest">Nomad_Map</a>
+        <a href="#archive" onclick="toggleMobileMenu()" class="text-white hover:acid-text text-xl font-bold uppercase tracking-widest">Database</a>
+        <a href="prossima_pagina.html" class="text-acid-bg border border-acid-bg px-6 py-2 rounded-full uppercase tracking-widest hover:bg-acid-bg hover:text-black transition">Phase_02_Gems</a>
+        <button onclick="toggleMobileMenu(); showSecret()" class="text-zinc-600 hover:text-white text-xs uppercase tracking-widest mt-8 animate-pulse">Deep_Vault_Access_Request</button>
+    </div>
 
     <header class="min-h-screen flex flex-col justify-center px-8 relative overflow-hidden">
         <div class="absolute top-20 right-[-10%] text-[30vw] font-black opacity-[0.02] pointer-events-none select-none">2026</div>
@@ -154,6 +175,12 @@
     </div>
 
     <script>
+        // NEW FUNCTION FOR MOBILE MENU
+        function toggleMobileMenu() {
+            const menu = document.getElementById('mobile-menu');
+            menu.classList.toggle('active');
+        }
+
         // COORDINATES ADDED FOR MAP & EXPANDED DESCRIPTIONS
         const destinations = [
             { 
