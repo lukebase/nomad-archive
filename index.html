@@ -6,7 +6,7 @@
     <title>NOMAD | Master Archive 2026</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Space+Mono&family=Plus+Jakarta+Sans:wght@300;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Space+Mono&family=Plus+Jakarta+Sans:wght@300;400;800&display=swap" rel="stylesheet">
     <style>
         :root { --acid: #ccff00; --dark: #070707; --sale: #ff3e00; }
         body { font-family: 'Plus Jakarta Sans', sans-serif; background: var(--dark); color: #fff; scroll-behavior: smooth; }
@@ -14,20 +14,27 @@
         .acid-text { color: var(--acid); }
         .acid-bg { background: var(--acid); }
         .sale-text { color: var(--sale); }
+        .border-acid { border-color: var(--acid); }
         
         .glass { background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.05); }
+        .glass-dark { background: rgba(0, 0, 0, 0.8); backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.1); }
+        
         .no-scrollbar::-webkit-scrollbar { display: none; }
         
         .pulse-sale { animation: pulse 1.5s infinite; }
         @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.4; } 100% { opacity: 1; } }
 
-        #secret-vault, #modal-booking { display: none; background: rgba(0,0,0,0.98); backdrop-filter: blur(30px); z-index: 3000; }
+        /* Modals */
+        #secret-vault, #modal-booking, #modal-details { display: none; background: rgba(0,0,0,0.95); backdrop-filter: blur(10px); z-index: 3000; }
         
         .desc-hidden { max-height: 0; opacity: 0; transition: all 0.5s ease; overflow: hidden; }
         .group:hover .desc-hidden { max-height: 100px; opacity: 1; margin-top: 1rem; }
 
         #toast { position: fixed; bottom: 20px; right: 20px; background: var(--acid); color: #000; padding: 15px 25px; border-radius: 10px; font-weight: bold; transform: translateY(150%); transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); z-index: 5000; }
         #toast.active { transform: translateY(0); }
+
+        /* Itinerary selection style */
+        .itinerary-option.selected { border-color: var(--acid); background: rgba(204, 255, 0, 0.05); }
     </style>
 </head>
 <body>
@@ -39,7 +46,7 @@
         <div class="hidden md:flex gap-8 text-[10px] font-bold uppercase tracking-widest items-center">
             <a href="#sales" class="sale-text pulse-sale">● Live_Sales</a>
             <a href="#archive" class="hover:acid-text transition">Database</a>
-            <a href="prossima_pagina.html" class="px-3 py-1 border border-acid-bg rounded text-acid-bg hover:bg-acid-bg hover:text-black transition uppercase">Phase_02_Gems</a>
+            <a href="#" class="px-3 py-1 border border-acid-bg rounded text-acid-bg hover:bg-acid-bg hover:text-black transition uppercase">Phase_02_Gems</a>
             <button onclick="showSecret()" class="opacity-20 hover:opacity-100 transition text-[8px] animate-pulse">Unlocking_Vault...</button>
         </div>
         <button onclick="openBooking()" class="acid-bg text-black px-6 py-2 rounded-full font-black text-xs uppercase transition hover:scale-105 active:scale-95">Prenota</button>
@@ -51,59 +58,84 @@
             Archive <br> <span class="acid-text italic">Unfolded.</span>
         </h1>
         <p class="mt-8 max-w-xl text-zinc-500 text-lg">
-            Accesso autorizzato al database NOMAD. Esplora le anomalie geografiche e i glitch di prezzo nel sistema prima del prossimo wipe di memoria.
+            Accesso autorizzato al database NOMAD. Esplora le anomalie geografiche, i percorsi non tracciati e i glitch di prezzo nel sistema.
         </p>
-        <a href="prossima_pagina.html" class="inline-flex items-center gap-3 mt-10 px-8 py-4 acid-bg text-black font-black text-sm uppercase tracking-widest rounded-full hover:scale-105 active:scale-95 transition-transform cursor-pointer select-none" style="min-height:48px;">
-            Phase_02_Gems <span class="text-lg">→</span>
-        </a>
     </header>
 
     <section id="sales" class="py-20 bg-zinc-900/20 border-y border-white/5">
-        <div class="px-8 mb-10 flex justify-between items-center">
-            <h2 class="text-4xl font-black uppercase sale-text italic">Sconti di Sistema_</h2>
+        <div class="px-8 mb-10 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+            <div>
+                <h2 class="text-4xl font-black uppercase sale-text italic">Sconti di Sistema_</h2>
+                <p class="text-xs text-zinc-500 mt-2 mono">OFFERTE A TEMPO LIMITATO // PRONTE AL DECOLLO</p>
+            </div>
             <div class="mono text-xs bg-white/5 px-4 py-2 rounded">TIMER: <span id="timer" class="sale-text">04:59:59</span></div>
         </div>
-        <div class="flex overflow-x-auto gap-6 px-8 no-scrollbar pb-10">
-            <div class="min-w-[300px] glass p-8 rounded-[2rem] border-l-4 border-l-[#ff3e00]">
-                <span class="text-[10px] mono text-zinc-500 uppercase">Drop #001</span>
-                <h3 class="text-2xl font-black mt-2 uppercase">Almaty Lake</h3>
-                <p class="text-xs text-zinc-400 mb-4">Kazakistan / Brutal Nature</p>
-                <div class="flex items-end gap-3">
-                    <span class="text-zinc-600 line-through text-lg">€1.200</span>
-                    <span class="text-4xl font-black sale-text">€690</span>
-                </div>
-                <button onclick="selectAndNotify('Almaty Lake')" class="w-full mt-6 py-3 border border-[#ff3e00] text-[#ff3e00] rounded-xl font-bold hover:bg-[#ff3e00] hover:text-white transition uppercase text-xs">Reclama</button>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6 px-8 pb-10" id="sales-grid">
             </div>
-            <div class="min-w-[300px] glass p-8 rounded-[2rem] border-l-4 border-l-[#ff3e00]">
-                <span class="text-[10px] mono text-zinc-500 uppercase">Drop #005</span>
-                <h3 class="text-2xl font-black mt-2 uppercase">Siwa Salt</h3>
-                <p class="text-xs text-zinc-400 mb-4">Egitto / Deep Desert</p>
-                <div class="flex items-end gap-3">
-                    <span class="text-zinc-600 line-through text-lg">€1.450</span>
-                    <span class="text-4xl font-black sale-text">€880</span>
-                </div>
-                <button onclick="selectAndNotify('Siwa Salt')" class="w-full mt-6 py-3 border border-[#ff3e00] text-[#ff3e00] rounded-xl font-bold hover:bg-[#ff3e00] hover:text-white transition uppercase text-xs">Reclama</button>
-            </div>
-        </div>
     </section>
 
     <section id="archive" class="py-32 px-8">
         <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-20 gap-6">
             <h2 class="text-6xl font-black uppercase tracking-tighter">The Database_</h2>
             <div class="flex gap-4">
-                <button onclick="filterPrice(1000)" class="px-4 py-2 border border-white/10 rounded-full text-[10px] uppercase font-bold hover:acid-bg hover:text-black transition">Under €1000</button>
+                <button onclick="filterPrice(1500)" class="px-4 py-2 border border-white/10 rounded-full text-[10px] uppercase font-bold hover:acid-bg hover:text-black transition">Under €1500</button>
                 <button onclick="filterPrice(5000)" class="px-4 py-2 border border-white/10 rounded-full text-[10px] uppercase font-bold hover:acid-bg hover:text-black transition">Tutti</button>
             </div>
         </div>
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4" id="master-grid"></div>
     </section>
 
+    <div id="modal-details" class="fixed inset-0 flex items-center justify-center p-4 overflow-hidden">
+        <div class="max-w-4xl w-full h-[90vh] glass-dark rounded-[2rem] flex flex-col relative overflow-hidden">
+            <div class="h-40 bg-zinc-800 relative overflow-hidden shrink-0">
+                <h2 id="detail-title" class="absolute bottom-4 left-8 text-5xl md:text-7xl font-black uppercase tracking-tighter mix-blend-difference z-10">DESTINATION</h2>
+                <div class="absolute inset-0 opacity-20 bg-[url('https://grainy-gradients.vercel.app/noise.svg')]"></div>
+                <div class="absolute top-4 right-4">
+                     <button onclick="closeDetails()" class="text-white hover:acid-text text-xl font-bold px-4 py-2">X_CLOSE</button>
+                </div>
+            </div>
+
+            <div class="flex-1 overflow-y-auto p-8 custom-scrollbar">
+                <div class="flex flex-col md:flex-row gap-8">
+                    <div class="md:w-1/2">
+                        <div class="flex gap-4 mb-6">
+                            <span id="detail-loc" class="px-3 py-1 border border-zinc-700 rounded text-xs uppercase mono text-zinc-400">Location</span>
+                            <span id="detail-tag" class="px-3 py-1 border border-zinc-700 rounded text-xs uppercase mono acid-text">Tag</span>
+                            <span id="detail-price" class="px-3 py-1 bg-white text-black font-bold rounded text-xs uppercase mono">Price</span>
+                        </div>
+                        <p id="detail-full-desc" class="text-zinc-300 leading-relaxed text-sm mb-8 font-light"></p>
+                    </div>
+
+                    <div class="md:w-1/2">
+                        <h3 class="mono text-xs text-zinc-500 uppercase mb-4 tracking-widest">Seleziona Itinerario Operativo:</h3>
+                        <div id="itinerary-list" class="flex flex-col gap-3">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="p-6 border-t border-white/10 flex justify-between items-center bg-black/50 shrink-0">
+                <div class="text-[10px] mono text-zinc-500">ID_REF: <span id="detail-id">000</span></div>
+                <button onclick="confirmSelection()" class="acid-bg text-black px-8 py-3 rounded-xl font-black uppercase text-sm hover:scale-105 transition">Conferma Selezione</button>
+            </div>
+        </div>
+    </div>
+
     <div id="modal-booking" class="fixed inset-0 flex items-center justify-center p-6">
         <div class="max-w-lg w-full glass p-10 rounded-[3rem] text-center">
             <h2 class="text-3xl font-black uppercase acid-text mb-4">Exporting Ticket_</h2>
-            <p class="mono text-[10px] text-zinc-500 mb-8">Inserisci il tuo ID Agente per generare il documento di viaggio criptato in PDF.</p>
-            <input type="text" id="user-name" placeholder="NOME AGENTE" class="w-full bg-zinc-900 border border-zinc-800 p-4 rounded-2xl mono text-sm mb-4 outline-none focus:border-acid-bg">
-            <button onclick="generateBookingPDF()" class="w-full acid-bg text-black font-black py-4 rounded-2xl uppercase tracking-tighter hover:invert transition">Genera PDF di Prenotazione</button>
+            <p class="mono text-[10px] text-zinc-500 mb-8">Generazione documento di viaggio criptato.</p>
+            
+            <div class="bg-zinc-900/50 p-4 rounded-xl mb-6 text-left">
+                <p class="text-[10px] text-zinc-500 uppercase">Destinazione</p>
+                <p class="font-bold text-lg mb-2" id="booking-dest-name">...</p>
+                <p class="text-[10px] text-zinc-500 uppercase">Itinerario Scelto</p>
+                <p class="text-sm acid-text mono" id="booking-itinerary-name">Nessuno selezionato</p>
+            </div>
+
+            <input type="text" id="user-name" placeholder="NOME AGENTE / VIAGGIATORE" class="w-full bg-zinc-900 border border-zinc-800 p-4 rounded-2xl mono text-sm mb-4 outline-none focus:border-acid-bg">
+            <button onclick="generateBookingPDF()" class="w-full acid-bg text-black font-black py-4 rounded-2xl uppercase tracking-tighter hover:invert transition">Genera Documento Ufficiale</button>
             <button onclick="closeBooking()" class="mt-6 text-[10px] text-zinc-600 uppercase border-b border-zinc-800 pb-1">Annulla</button>
         </div>
     </div>
@@ -114,7 +146,7 @@
             <p class="mono text-center text-zinc-500 text-xs mb-12 uppercase">Coordinate protette da protocollo militare. Estrazione solo per agenti Livello 5.</p>
             
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-20" id="secret-grid">
-                </div>
+            </div>
             
             <div class="flex justify-center mb-20">
                 <button onclick="closeSecret()" class="text-xs border-b border-red-500 text-red-500 pb-2 uppercase tracking-widest hover:text-white transition">Chiudi Terminale Segreto</button>
@@ -123,50 +155,339 @@
     </div>
 
     <script>
+        // --- DATA STRUCTURES ---
+
+        // Dati per la sezione "Sconti di Sistema" (ora interattivi)
+        const salesDestinations = [
+            {
+                name: "Almaty Lake", loc: "Kazakistan", oldPrice: 1200, price: 690, tag: "NATURE",
+                shortDesc: "Brutal Nature",
+                fullDesc: "Un lago turchese incastonato tra le montagne del Trans-Ili Alatau. Zona di confine militare, acqua glaciale pura e foreste di abeti rossi.",
+                itineraries: [
+                    "BIG ALMATY PEAK: Trekking verso la vetta piramidale che sovrasta il lago e visita all'osservatorio astronomico sovietico.",
+                    "NOMAD GLAMPING: Pernottamento in yurta di lusso sulle rive del lago con cena tradizionale kazaka.",
+                    "FOREST TRAIL: Escursione attraverso la foresta di Tien Shan fino alla cascata Bear."
+                ]
+            },
+            {
+                name: "Skeleton Coast", loc: "Namibia", oldPrice: 2800, price: 1990, tag: "GHOST",
+                shortDesc: "Namibia / Shipwrecks",
+                fullDesc: "Dove il deserto del Namib incontra l'oceano Atlantico. Una costa disseminata di relitti di navi e ossa di balena. Nebbia perenne e leoni del deserto.",
+                itineraries: [
+                    "SHIPWRECK HUNTER: Sorvolo in piccolo aereo per individuare i relitti più remoti e irraggiungibili via terra.",
+                    "DESERT LION: Safari 4x4 alla ricerca dei rari leoni adattati al deserto e degli elefanti che scivolano sulle dune.",
+                    "MÖWE BAY: Spedizione isolata verso la colonia di foche di Cape Cross e pernottamento in lodge eco-sostenibile."
+                ]
+            },
+            {
+                name: "Raja Ampat", loc: "Indonesia", oldPrice: 3100, price: 2250, tag: "MARINE",
+                shortDesc: "Indonesia / Marine Void",
+                fullDesc: "L'epicentro della biodiversità marina mondiale. Migliaia di isole carsiche coperte di giungla che emergono da un mare color smeraldo.",
+                itineraries: [
+                    "WAYAG VIEWPOINT: Scalata delle formazioni carsiche per la vista iconica dell'arcipelago e snorkeling con gli squali di barriera.",
+                    "JELLYFISH LAKE: Nuotata nel lago di meduse non urticanti e visita ai villaggi galleggianti.",
+                    "DEEP DIVE: Crociera liveaboard dedicata alle immersioni nei siti più incontaminati del pianeta."
+                ]
+            },
+            {
+                name: "Atacama", loc: "Cile", oldPrice: 1900, price: 1100, tag: "STARS",
+                shortDesc: "Cile / Stargazing",
+                fullDesc: "Il deserto più arido del mondo. Paesaggi lunari, geyser d'alta quota e il cielo più limpido della Terra per l'osservazione astronomica.",
+                itineraries: [
+                    "ALMA OBSERVER: Visita esclusiva (se permessa) nei pressi dell'osservatorio ALMA e notte astronomica con telescopi professionali.",
+                    "MOON VALLEY: Trekking al tramonto nella Valle della Luna e sandboarding sulle dune giganti.",
+                    "EL TATIO: Alba ai geyser del Tatio (4300m) e bagno nelle piscine termali naturali."
+                ]
+            },
+            {
+                name: "Siwa Salt", loc: "Egitto", oldPrice: 1450, price: 880, tag: "SALT",
+                shortDesc: "Egitto / Deep Desert",
+                fullDesc: "Un'oasi isolata nel deserto occidentale. Laghi salati turchesi dove è impossibile affondare e rovine dell'oracolo di Amon.",
+                itineraries: [
+                    "SALT FLOAT: Esperienza di galleggiamento nei laghi di sale cristallino e trattamento terapeutico.",
+                    "ORACLE TEMPLE: Visita alle rovine dove Alessandro Magno consultò l'oracolo e safari nel Grande Mare di Sabbia.",
+                    "SHALI FORTRESS: Esplorazione della città vecchia fatta di fango e sale (karshif) al tramonto."
+                ]
+            }
+        ];
+
         const destinations = [
-            { name: "Socotra", loc: "Yemen", price: 2900, tag: "RARE", desc: "Alberi del sangue di drago e dune bianche aliene." },
-            { name: "Svalbard", loc: "Norvegia", price: 3100, tag: "ARCTIC", desc: "Minieri artiche e il silenzio dei ghiacciai perenni." },
-            { name: "Uyuni", loc: "Bolivia", price: 1800, tag: "HOT", desc: "Il deserto di sale che riflette l'infinito del cosmo." },
-            { name: "Faroe", loc: "Danimarca", price: 1300, tag: "NEW", desc: "Venti brutali e scogliere a picco sul nord atlantico." },
-            { name: "Gobi", loc: "Mongolia", price: 950, tag: "BUDGET", desc: "Notti in yurta sotto la via lattea più nitida del mondo." },
-            { name: "Kamchatka", loc: "Russia", price: 4200, tag: "EXTREME", desc: "Terra di vulcani attivi, geyser e orsi bruni giganti." },
-            { name: "Zion", loc: "USA", price: 1600, tag: "WILD", desc: "Canyon stretti e vette di roccia rossa infuocata." },
-            { name: "Lofoten", loc: "Norvegia", price: 2200, tag: "COOL", desc: "Picchi che emergono dal mare e aurore invernali." },
-            { name: "Petra", loc: "Giordania", price: 890, tag: "FLASH", desc: "L'antica città scavata nell'arenaria rosa." },
-            { name: "Ladakh", loc: "India", price: 1100, tag: "ZEN", desc: "Monasteri tibetani tra le vette dell'Himalaya." },
-            { name: "Azores", loc: "Portogallo", price: 920, tag: "NEAR", desc: "Paradiso verde nel cuore dell'oceano atlantico." },
-            { name: "Varanasi", loc: "India", price: 680, tag: "SOUL", desc: "Rituali millenari sulle rive del fiume sacro Gange." }
+            { 
+                name: "Socotra", 
+                loc: "Yemen", 
+                price: 2900, 
+                tag: "ALIEN", 
+                shortDesc: "Alberi del sangue di drago e dune bianche.",
+                fullDesc: "Isolata dal continente per milioni di anni, Socotra ospita forme di vita che non esistono altrove. L'altopiano di Diksam sembra un paesaggio marziano punteggiato dagli alberi Sangue di Drago a forma di ombrello rovesciato. Le dune di Arher si innalzano come montagne di zucchero bianco contro scogliere di granito nero, offrendo un contrasto visivo violento e purissimo.",
+                itineraries: [
+                    "XENO-BOTANICA: Trekking di 5 giorni attraverso la foresta di Fermhin focalizzato sulla flora endemica e nottate in tenda sull'altopiano.",
+                    "COASTAL PHANTOM: Spedizione in fuoristrada lungo la costa sud, esplorazione della grotta di Dogub e bivacco sulle spiagge incontaminate di Aomak.",
+                    "DEEP CANYON: Discesa nel Wadi Dirhur con bagno nelle piscine naturali d'acqua dolce, isolamento totale e zero segnale satellitare."
+                ]
+            },
+            { 
+                name: "Svalbard", 
+                loc: "Norvegia", 
+                price: 3100, 
+                tag: "ARCTIC", 
+                shortDesc: "Miniere artiche e il silenzio dei ghiacciai.",
+                fullDesc: "L'ultimo avamposto di civiltà prima del Polo Nord. Un deserto di ghiaccio dove gli orsi polari superano in numero gli abitanti. Qui il sole non tramonta per mesi o non sorge affatto. L'architettura è puramente funzionale, brutale, resiste a venti che spazzano via l'anima.",
+                itineraries: [
+                    "GHOST TOWN PROTOCOL: Esplorazione della città mineraria sovietica abbandonata di Pyramiden. Il busto di Lenin guarda ancora i ghiacciai. Pernottamento nell'unico hotel rimasto aperto.",
+                    "DOOMSDAY VAULT: Motoslitta fino all'ingresso del Global Seed Vault, il bunker che custodisce i semi del mondo. Proseguimento verso le grotte di ghiaccio millenario.",
+                    "POLAR NIGHT WATCH: Spedizione invernale in slitta trainata da cani (mushing) alla ricerca dell'aurora boreale profonda, lontano dall'inquinamento luminoso di Longyearbyen."
+                ]
+            },
+            { 
+                name: "Uyuni", 
+                loc: "Bolivia", 
+                price: 1800, 
+                tag: "MIRROR", 
+                shortDesc: "Il deserto di sale che riflette il cosmo.",
+                fullDesc: "10.000 chilometri quadrati di nulla bianco. Durante la stagione delle piogge, il Salar diventa lo specchio più grande del mondo, cancellando l'orizzonte e permettendo di camminare tra le nuvole. L'aria è rarefatta, il silenzio è assoluto, interrotto solo dal cracking del sale sotto le ruote delle jeep.",
+                itineraries: [
+                    "INFINITE REFLECTION: 3 giorni in 4x4 attraversando il salar allagato per fotografia astronomica notturna. Pernottamento in hotel di sale.",
+                    "VOLCANIC EDGE: Estensione verso la Laguna Colorada e i geyser Sol de Mañana a 5000m di altitudine. Paesaggi tossici e fenicotteri rosa.",
+                    "ISLA INCOGNITA: Trekking sull'Isola Incahuasi, un'isola di cactus giganti millenari nel mezzo del mare di sale, all'alba prima dell'arrivo dei turisti."
+                ]
+            },
+            { 
+                name: "Faroe", 
+                loc: "Danimarca", 
+                price: 1300, 
+                tag: "WIND", 
+                shortDesc: "Venti brutali e scogliere a picco.",
+                fullDesc: "Un arcipelago di 18 isole vulcaniche flagellate dall'Atlantico. Le strade sono capolavori di ingegneria che bucano le montagne e passano sotto l'oceano. Il verde dell'erba è quasi fosforescente, in netto contrasto con il basalto nero e il cielo grigio piombo.",
+                itineraries: [
+                    "CLIFF HANGER: Escursione estrema al faro di Kallur su Kalsoy e trekking lungo le scogliere verticali del lago Sørvågsvatn, che sembra fluttuare sull'oceano.",
+                    "HELICOPTER HOP: Utilizzo della rete di elicotteri locale (sovvenzionata dallo stato) per raggiungere l'isola inaccessibile di Mykines e le colonie di pulcinella di mare.",
+                    "NORDIC SILENCE: Ritiro nel villaggio isolato di Saksun, incastonato in un fiordo naturale, con sessioni di pesca tradizionale e cucina fermentata locale."
+                ]
+            },
+            { 
+                name: "Gobi", 
+                loc: "Mongolia", 
+                price: 950, 
+                tag: "NOMAD", 
+                shortDesc: "Notti in yurta sotto la via lattea.",
+                fullDesc: "Uno dei luoghi più inospitali e affascinanti della Terra. Il Gobi non è solo sabbia, è roccia, ghiaccio e ossa di dinosauro. Qui la cultura nomade sopravvive immutata. L'orizzonte è così vasto da curvare visibilmente.",
+                itineraries: [
+                    "DINOSAUR HUNTER: Spedizione alle Scogliere Fiammeggianti (Bayanzag) dove furono trovate le prime uova di dinosauro. Ricerca fossili (solo osservazione).",
+                    "KHONGORYN ELS: Scalata delle 'Dune che Cantano' al tramonto e pernottamento in gher tradizionale con una famiglia di allevatori di cammelli.",
+                    "ICE CANYON: Trekking invernale o primaverile nella valle di Yolyn Am, dove il ghiaccio persiste anche in estate all'interno di una gola strettissima."
+                ]
+            },
+            { 
+                name: "Kamchatka", 
+                loc: "Russia", 
+                price: 4200, 
+                tag: "FIRE", 
+                shortDesc: "Vulcani attivi, geyser e orsi bruni.",
+                fullDesc: "Una penisola selvaggia nel Pacifico, accessibile quasi solo via elicottero. Terra di fuoco e ghiaccio, dove i vulcani fumano costantemente e i fiumi ribollono di salmoni. La densità di orsi bruni è la più alta al mondo.",
+                itineraries: [
+                    "HELISKI VOLCANO: Deposito in elicottero sul bordo di un vulcano attivo, discesa in sci sulla cenere o sulla neve vergine fino all'oceano.",
+                    "VALLEY OF GEYSERS: Accesso riservato alla riserva della biosfera Kronotsky per vedere la seconda concentrazione di geyser più grande al mondo.",
+                    "BEAR KINGDOM: Spedizione fotografica al lago Kuril durante la risalita dei salmoni per osservare la caccia degli orsi da distanza ravvicinata (con ranger armati)."
+                ]
+            },
+            { 
+                name: "Zion", 
+                loc: "USA", 
+                price: 1600, 
+                tag: "RED", 
+                shortDesc: "Canyon stretti e roccia rossa infuocata.",
+                fullDesc: "Non è solo un parco nazionale, è una cattedrale di pietra arenaria. Le pareti verticali si chiudono sopra la testa, creando corridoi di luce e ombra. Angels Landing offre uno dei sentieri più pericolosi e gratificanti d'America.",
+                itineraries: [
+                    "THE NARROWS: Trekking acquatico risalendo il Virgin River all'interno del canyon slot più stretto, con l'acqua alla vita e pareti alte 300 metri.",
+                    "ANGELS FALL: Scalata tecnica all'alba verso Angels Landing utilizzando le catene di sicurezza, evitando la folla e godendo del silenzio verticale.",
+                    "SUBWAY TECH: Percorso tecnico (permesso speciale richiesto) che richiede calate in corda doppia e nuoto attraverso pozze gelide nel backcountry."
+                ]
+            },
+            { 
+                name: "Lofoten", 
+                loc: "Norvegia", 
+                price: 2200, 
+                tag: "PEAK", 
+                shortDesc: "Picchi sul mare e aurore invernali.",
+                fullDesc: "Montagne che sembrano draghi dormienti che emergono direttamente dal mare. I villaggi di pescatori con le loro Rorbu rosse (palafitte) punteggiano la costa. In inverno, la luce è blu, magica, e l'aurora danza sopra i picchi innevati.",
+                itineraries: [
+                    "ARCTIC SURF: Lezione di surf nelle acque gelide ma perfette di Unstad, con muta 6mm, sotto il sole di mezzanotte o l'aurora.",
+                    "REINEBRINGEN: La scalata iconica per la vista più famosa dell'arcipelago, seguita da sauna tradizionale e tuffo nel fiordo.",
+                    "FISHING VILLAGE HOP: Kayak tra le isole da Hamnøy a Sakrisøy, dormendo nelle vecchie capanne dei pescatori di merluzzo riadattate."
+                ]
+            },
+            { 
+                name: "Lençóis", 
+                loc: "Brasile", 
+                price: 2400, 
+                tag: "OASIS", 
+                shortDesc: "Deserto bianco di dune e lagune blu.",
+                fullDesc: "Un deserto paradossale. Tra maggio e settembre, le piogge riempiono le valli tra le dune di sabbia bianca, creando migliaia di lagune di acqua dolce cristallina, blu e smeraldo. È un paesaggio che sfida la logica geografica.",
+                itineraries: [
+                    "LAGOON HOPPING: Trekking di 4 giorni attraversando il parco a piedi nudi, dormendo nelle amache dei rari villaggi di pescatori (Oasis) all'interno delle dune.",
+                    "RIVER DRIFT: Discesa lenta del Rio Preguiças in barca privata fino all'oceano, attraversando mangrovie e foreste di palme Buriti.",
+                    "FLIGHT MODE: Sorvolo in piccolo aereo monomotore per cogliere l'immensità geometrica delle dune e dei laghi dall'alto."
+                ]
+            },
+            { 
+                name: "Danakil", 
+                loc: "Etiopia", 
+                price: 1750, 
+                tag: "ACID", 
+                shortDesc: "Il luogo più caldo e alieno della Terra.",
+                fullDesc: "La Depressione della Danakil è uno dei luoghi geologicamente più attivi e pericolosi. Pozze di acido solforico verde neon, distese di sale infinite e vulcani di lava permanenti. Le temperature superano regolarmente i 50°C.",
+                itineraries: [
+                    "ERTA ALE: Trekking notturno sul vulcano attivo Erta Ale per osservare il lago di lava permanente ribollire a pochi metri di distanza.",
+                    "DALLOL COLORS: Esplorazione dei campi idrotermali di Dallol, un paesaggio psichedelico di formazioni saline gialle, verdi e arancioni.",
+                    "SALT CARAVAN: Accompagnamento di una carovana di cammelli dei minatori di sale Afar lungo le antiche rotte commerciali del deserto."
+                ]
+            },
+            { 
+                name: "Yakushima", 
+                loc: "Giappone", 
+                price: 2800, 
+                tag: "MOSS", 
+                shortDesc: "Foreste millenarie di cedri e muschio.",
+                fullDesc: "L'isola che ha ispirato 'Princess Mononoke'. Una foresta pluviale temperata dove alberi millenari (Yakusugi) sono coperti da strati spessi di muschio verde smeraldo. L'atmosfera è mistica, perennemente umida e silenziosa.",
+                itineraries: [
+                    "JOMON SUGI: Trekking impegnativo di 10 ore lungo i vecchi binari ferroviari abbandonati per raggiungere l'albero Jomon Sugi, vecchio di 7000 anni.",
+                    "SHIRATANI UNSUIKYO: Passeggiata meditativa nella gola ricoperta di muschio, immersione nella foresta primaria e bagni negli onsen naturali sul mare.",
+                    "SEA TURTLE: Osservazione notturna (stagionale) della deposizione delle uova delle tartarughe marine sulla spiaggia di Nagata Inakahama."
+                ]
+            },
+            { 
+                name: "Waitomo", 
+                loc: "N. Zelanda", 
+                price: 2600, 
+                tag: "GLOW", 
+                shortDesc: "Grotte illuminate da vermi bioluminescenti.",
+                fullDesc: "Sotto le colline verdi si nasconde un labirinto di fiumi sotterranei e grotte calcaree. Il soffitto di queste caverne è illuminato da milioni di Arachnocampa luminosa, creando un cielo stellato vivente nel buio assoluto.",
+                itineraries: [
+                    "BLACK ABYSS: Discesa in corda doppia di 35 metri nel buio, seguita da tubing (ciambella) sui fiumi sotterranei e arrampicata su cascate interne.",
+                    "LOST WORLD: Calata assistita di 100 metri (la più alta in zona) in una dolina gigante piena di vegetazione preistorica e nebbia.",
+                    "GLOWWORM KAYAK: Navigazione silenziosa notturna in kayak sul lago Karapiro e nei canyon stretti per vedere la bioluminescenza senza bagnarsi."
+                ]
+            },
+            { 
+                name: "Wadi Rum", 
+                loc: "Giordania", 
+                price: 1100, 
+                tag: "MARS", 
+                shortDesc: "Cattedrali di arenaria e notti beduine.",
+                fullDesc: "Conosciuto come 'La Valle della Luna', questo deserto rosso è costellato di formazioni rocciose monolitiche. Set di innumerevoli film su Marte, offre un isolamento totale e una connessione profonda con la cultura del deserto.",
+                itineraries: [
+                    "BURDAH BRIDGE: Scalata tecnica fino all'arco di roccia naturale più alto del Wadi Rum, con vista panoramica sull'intero deserto.",
+                    "BEDOUIN TRACKS: Traversata di 3 giorni a dorso di cammello o a piedi, dormendo all'aperto ('bivouac') sotto le stelle, cucinando nel fuoco sotterraneo (Zarb).",
+                    "JEEP SCRAMBLE: Esplorazione ad alta velocità in vecchie Toyota Land Cruiser attraverso le dune rosse e i canyon stretti con iscrizioni nabateee."
+                ]
+            },
+            { 
+                name: "Zhangjiajie", 
+                loc: "Cina", 
+                price: 2300, 
+                tag: "FLOAT", 
+                shortDesc: "Pilastri di quarzite che toccano il cielo.",
+                fullDesc: "Le montagne fluttuanti di Avatar esistono davvero qui. Migliaia di pilastri di arenaria quarzifera alti centinaia di metri emergono dalla foresta subtropicale, spesso avvolti nella nebbia che li fa sembrare sospesi nel vuoto.",
+                itineraries: [
+                    "HEAVEN'S GATE: Salita dei 999 gradini verso la porta del cielo (Tianmen Cave), un arco naturale gigante, e camminata sulla passerella di vetro a strapiombo.",
+                    "AVATAR HIKE: Trekking tra i pilastri di Yuanjiajie e l'ascensore esterno Bailong (il più alto del mondo) incastonato nella scogliera.",
+                    "VALLEY SILENCE: Esplorazione del ruscello Golden Whip Stream dal basso, camminando tra le basi dei giganti di pietra, lontano dalle folle delle funivie."
+                ]
+            }
         ];
 
         const secretDestinations = [
-            { name: "Chernobyl", loc: "Ukraine", price: 1800, desc: "Pernottamento nel cuore della Zona di Alienazione di Pripyat." },
-            { name: "Pyongyang", loc: "North Korea", price: 3400, desc: "Accesso sotterraneo e tour dei monumenti brutalisti proibiti." },
-            { name: "Sentinel Island", loc: "Andaman", price: 5000, desc: "Osservazione offshore a distanza di sicurezza tribù non contattate." },
-            { name: "Snake Island", loc: "Brazil", price: 1500, desc: "Sbarco rapido in area ad alta densità di Bothrops insularis." },
-            { name: "Area 51", loc: "USA", price: 2200, desc: "Pattugliamento notturno perimetro Groom Lake con visione termica." },
-            { name: "Vatikan Vaults", loc: "Vatican", price: 4100, desc: "Infiltrazione notturna negli archivi segreti non censiti." },
-            { name: "Mount Weather", loc: "USA", price: 6000, desc: "Esplorazione perimetrale bunker continuità governativa." },
-            { name: "Svalbard Seed", loc: "Arctic", price: 2800, desc: "Accesso tunnel d'ingresso banca mondiale dei semi (Doomsday)." },
-            { name: "Fukushima", loc: "Japan", price: 1900, desc: "Esplorazione urbana 'Red Zone' città fantasma di Namie." },
-            { name: "Kowloon Wall", loc: "Cyber", price: 3200, desc: "Ricostruzione AR fisica dei bassifondi di Hong Kong." },
-            { name: "Point Nemo", loc: "Ocean", price: 9900, desc: "Spedizione verso il punto più remoto del pianeta." },
-            { name: "Darvaza Gas", loc: "Turkmenistan", price: 1400, desc: "Accampamento sul bordo della Porta dell'Inferno." }
+            { 
+                name: "Chernobyl", 
+                loc: "Ucraina", 
+                price: 1800, 
+                desc: "Zona di Alienazione.",
+                fullDesc: "Un viaggio nel tempo al 1986. La natura si sta riprendendo ciò che l'uomo ha abbandonato. Il silenzio di Pripyat è assordante. I contatori geiger sono la colonna sonora di questa esperienza post-apocalittica.",
+                itineraries: [
+                    "CONTROL ROOM 4: Accesso speciale (tuta protettiva obbligatoria) alla sala di controllo del reattore 4, l'epicentro del disastro.",
+                    "DUGA RADAR: Scalata (non ufficiale) o visita alla base del 'Picchio Russo', la gigantesca antenna radar top-secret sovietica nascosta nei boschi.",
+                    "RED FOREST: Sorvolo in drone (o perimetro sicuro) della foresta rossa, una delle aree più radioattive, per osservare la mutazione della flora."
+                ]
+            },
+            { 
+                name: "Area 51", 
+                loc: "Nevada, USA", 
+                price: 2200, 
+                desc: "Perimetro Groom Lake.",
+                fullDesc: "Il luogo più segreto del pianeta che tutti conoscono. Non si entra, ma si osserva. Il cielo sopra il deserto del Nevada è teatro di test aerei non identificati. L'atmosfera è paranoica, elettrica.",
+                itineraries: [
+                    "THE BLACK MAILBOX: Appostamento notturno con visori termici e scanner radio per intercettare comunicazioni sulla 'Extraterrestrial Highway'.",
+                    "CAMMO DUDES: Avvicinamento al perimetro fino al limite legale per testare i tempi di reazione della sicurezza privata (senza infrangere la legge).",
+                    "TIKABOO PEAK: Trekking impegnativo fino alla cima del Tikaboo Peak, l'unico punto legale da cui è possibile vedere l'interno della base con telescopi potenti."
+                ]
+            },
+            { 
+                name: "Pyongyang", 
+                loc: "Nord Corea", 
+                price: 3400, 
+                desc: "Brutalismo Totalitario.",
+                fullDesc: "Un teatro a cielo aperto. Tutto è coreografia. L'architettura è monumentale, i colori pastello nascondono il cemento. Un'immersione in una realtà alternativa dove la Guerra Fredda non è mai finita.",
+                itineraries: [
+                    "DEEP METRO: Tour completo della metropolitana di Pyongyang, una delle più profonde al mondo, usata anche come bunker nucleare, con fermate non turistiche.",
+                    "DMZ TENSION: Visita alla zona demilitarizzata di Panmunjom, guardando in faccia i soldati del sud attraverso la linea di confine in cemento.",
+                    "MASS GAMES: (Stagionale) Accesso VIP allo stadio Rungrado per assistere alle coreografie di massa con 100.000 perfomer sincronizzati."
+                ]
+            },
+            {
+                name: "Baikonur",
+                loc: "Kazakistan",
+                price: 4500,
+                desc: "Cosmodromo Sovietico.",
+                fullDesc: "La porta delle stelle dell'URSS. Qui Gagarin è partito per lo spazio. La steppa è disseminata di detriti spaziali e rampe di lancio attive e abbandonate. Un mix di alta tecnologia e decadenza sovietica.",
+                itineraries: [
+                    "PROTON LAUNCH: Accesso VIP (richiede nulla osta di sicurezza 60 giorni prima) per assistere al lancio di un razzo Proton o Soyuz da distanza ravvicinata.",
+                    "BURAN HANGAR: Infiltrazione (o visita guidata speciale) nell'hangar abbandonato che ospita le navette spaziali Buran, coperte di polvere e guano.",
+                    "STAR CITY ZERO: Visita alle case originali di Gagarin e Korolev, conservate come santuari del programma spaziale."
+                ]
+            },
+            {
+                name: "Snake Island",
+                loc: "Brasile",
+                price: 5000,
+                desc: "Ilha da Queimada Grande.",
+                fullDesc: "L'isola più pericolosa al mondo. Chiusa al pubblico dalla Marina Brasiliana. Ospita la vipera Golden Lancehead, il cui veleno scioglie la carne. Densità: un serpente per metro quadrato.",
+                itineraries: [
+                    "OFFSHORE DRONE: Spedizione scientifica autorizzata (osservatore) o navigazione perimetrale ravvicinata per lanciare droni di ricognizione sull'isola.",
+                    "LIGHTHOUSE RUN: (Estremamente Raro/Illegale) Attracco rapido per manutenzione del faro automatico con tute anti-morso kevlar integrali.",
+                    "NAVY PATROL: Accompagnamento di una pattuglia della Marina per il monitoraggio dell'area di interdizione marittima."
+                ]
+            },
+            {
+                name: "Hashima",
+                loc: "Giappone",
+                price: 1200,
+                desc: "Battleship Island.",
+                fullDesc: "Gunkanjima. Un'isola fortezza di cemento abbandonata nel 1974. Era il luogo più densamente popolato della terra, ora è una città fantasma in mezzo al mare che si sgretola sotto i tifoni.",
+                itineraries: [
+                    "RESTRICTED ZONE: Permesso speciale per entrare nelle zone 'nere' degli edifici residenziali pericolanti (normalmente chiusi ai turisti standard).",
+                    "RUIN PHOTOGRAPHY: Workshop con urban explorers locali per documentare gli interni delle scuole e degli ospedali rimasti intatti dagli anni '70.",
+                    "TYPHOON WALL: Navigazione intorno alle mura difensive dell'isola durante il mare mosso per comprendere l'isolamento dei minatori."
+                ]
+            }
         ];
 
-        let selectedDest = "NON_SELEZIONATA";
+        // State variables
+        let selectedDestData = null; // Object containing the full dest info
+        let selectedItinerary = null; // String
 
+        // Funzione per renderizzare la griglia Database
         function renderGrid(data) {
             const grid = document.getElementById('master-grid');
             grid.innerHTML = data.map(d => `
-                <div class="glass p-8 rounded-[2.5rem] flex flex-col justify-between hover:border-acid-bg transition-all group cursor-pointer" onclick="selectAndNotify('${d.name}')">
+                <div class="glass p-8 rounded-[2.5rem] flex flex-col justify-between hover:border-acid-bg transition-all group cursor-pointer" onclick="openDetails('${d.name}')">
                     <div>
                         <div class="flex justify-between items-start mb-4">
-                            <span class="mono text-[8px] text-zinc-600">ID#${Math.floor(Math.random()*900)}</span>
+                            <span class="mono text-[8px] text-zinc-600">ID#${Math.floor(Math.random()*900 + 100)}</span>
                             <span class="text-[9px] font-black acid-text border border-zinc-800 px-2 py-1 rounded">${d.tag}</span>
                         </div>
                         <h3 class="text-2xl font-black uppercase group-hover:acid-text transition">${d.name}</h3>
                         <p class="text-[10px] text-zinc-500 uppercase mt-1 tracking-widest">${d.loc}</p>
-                        <p class="desc-hidden text-xs text-zinc-400 italic">${d.desc}</p>
+                        <p class="desc-hidden text-xs text-zinc-400 italic">${d.shortDesc}</p>
                     </div>
                     <div class="mt-8 pt-6 border-t border-white/5 flex justify-between items-center">
                         <span class="text-xl font-bold">€${d.price}</span>
@@ -176,28 +497,125 @@
             `).join('');
         }
 
-        function renderSecretGrid() {
-            const grid = document.getElementById('secret-grid');
-            grid.innerHTML = secretDestinations.map(d => `
-                <div class="p-6 border border-red-900/30 bg-red-950/10 rounded-3xl cursor-pointer hover:bg-red-600/20 transition group" onclick="selectAndNotify('${d.name}')">
-                    <h3 class="text-xl font-bold text-red-500 uppercase group-hover:text-white transition">Sector: ${d.name}</h3>
-                    <p class="text-[10px] mono text-zinc-500 mt-2 uppercase tracking-tighter">${d.loc}</p>
-                    <p class="text-xs text-zinc-400 mt-4 italic opacity-0 group-hover:opacity-100 transition">${d.desc}</p>
-                    <div class="mt-4 flex justify-between items-center">
-                        <span class="mono text-red-500 text-xs">€${d.price}</span>
-                        <span class="text-[8px] text-red-900 font-bold uppercase">Restricted_Access</span>
+        // Funzione per renderizzare la griglia Sales
+        function renderSalesGrid() {
+            const grid = document.getElementById('sales-grid');
+            grid.innerHTML = salesDestinations.map((d, index) => `
+                <div class="glass p-8 rounded-[2rem] border-l-4 border-l-[#ff3e00] flex flex-col justify-between group cursor-pointer hover:bg-[#ff3e00]/5 transition" onclick="openDetails('${d.name}')">
+                    <div>
+                        <span class="text-[10px] mono text-zinc-500 uppercase">Drop #00${index+1}</span>
+                        <h3 class="text-2xl font-black mt-2 uppercase group-hover:text-[#ff3e00] transition">${d.name}</h3>
+                        <p class="text-xs text-zinc-400 mb-4">${d.loc}</p>
+                    </div>
+                    <div>
+                        <div class="flex items-end gap-3 mb-6">
+                            <span class="text-zinc-600 line-through text-lg">€${d.oldPrice}</span>
+                            <span class="text-4xl font-black sale-text">€${d.price}</span>
+                        </div>
+                        <button class="w-full py-3 border border-[#ff3e00] text-[#ff3e00] rounded-xl font-bold group-hover:bg-[#ff3e00] group-hover:text-white transition uppercase text-xs">Book Now</button>
                     </div>
                 </div>
             `).join('');
         }
 
-        function selectAndNotify(name) {
-            selectedDest = name;
-            const toast = document.getElementById('toast');
-            toast.innerText = `SELEZIONATO: ${name.toUpperCase()}`;
-            toast.classList.add('active');
-            setTimeout(() => toast.classList.remove('active'), 3000);
+        function renderSecretGrid() {
+            const grid = document.getElementById('secret-grid');
+            grid.innerHTML = secretDestinations.map(d => `
+                <div class="p-6 border border-red-900/30 bg-red-950/10 rounded-3xl cursor-pointer hover:bg-red-600/20 transition group" onclick="openDetails('${d.name}', true)">
+                    <h3 class="text-xl font-bold text-red-500 uppercase group-hover:text-white transition">Sector: ${d.name}</h3>
+                    <p class="text-[10px] mono text-zinc-500 mt-2 uppercase tracking-tighter">${d.loc}</p>
+                    <p class="text-xs text-zinc-400 mt-4 italic opacity-0 group-hover:opacity-100 transition">${d.desc}</p>
+                    <div class="mt-4 flex justify-between items-center">
+                        <span class="mono text-red-500 text-xs">€${d.price}</span>
+                        <span class="text-[8px] text-red-900 font-bold uppercase">Restricted</span>
+                    </div>
+                </div>
+            `).join('');
         }
+
+        // --- NEW MODAL LOGIC ---
+
+        function openDetails(name, isSecret = false) {
+            // Cerca in tutte le liste (Standard, Sales, Secret)
+            const allDests = [...destinations, ...salesDestinations, ...secretDestinations];
+            const dest = allDests.find(d => d.name === name);
+            if (!dest) return;
+
+            selectedDestData = dest;
+            selectedItinerary = null; // Reset selection
+
+            // Populate Modal
+            document.getElementById('detail-title').innerText = dest.name;
+            document.getElementById('detail-loc').innerText = dest.loc;
+            document.getElementById('detail-tag').innerText = isSecret ? "CLASSIFIED" : dest.tag;
+            document.getElementById('detail-price').innerText = `€${dest.price}`;
+            document.getElementById('detail-full-desc').innerText = dest.fullDesc;
+            document.getElementById('detail-id').innerText = `NOMAD_DB_${Math.floor(Math.random()*10000)}`;
+
+            // Styles for secret vs normal
+            const titleEl = document.getElementById('detail-title');
+            if(isSecret) {
+                titleEl.classList.add('text-red-600'); 
+                titleEl.classList.remove('text-white');
+            } else {
+                titleEl.classList.add('text-white');
+                titleEl.classList.remove('text-red-600');
+            }
+
+            // Render Itineraries
+            const itinContainer = document.getElementById('itinerary-list');
+            itinContainer.innerHTML = dest.itineraries.map((it, index) => {
+                const parts = it.split(':');
+                const title = parts[0];
+                const desc = parts[1] || "";
+                return `
+                <div class="itinerary-option p-4 border border-zinc-800 rounded-xl cursor-pointer hover:border-zinc-600 transition" onclick="selectItinerary(this, '${title.trim()}')">
+                    <h4 class="font-bold text-sm text-zinc-200 mb-1 pointer-events-none uppercase">${title}</h4>
+                    <p class="text-xs text-zinc-500 pointer-events-none">${desc}</p>
+                </div>
+                `;
+            }).join('');
+
+            document.getElementById('modal-details').style.display = 'flex';
+        }
+
+        function selectItinerary(element, title) {
+            // Remove active class from all
+            document.querySelectorAll('.itinerary-option').forEach(el => el.classList.remove('selected'));
+            // Add to clicked
+            element.classList.add('selected');
+            selectedItinerary = title;
+        }
+
+        function closeDetails() {
+            document.getElementById('modal-details').style.display = 'none';
+        }
+
+        function confirmSelection() {
+            if(!selectedItinerary) {
+                const toast = document.getElementById('toast');
+                toast.innerText = "ERRORE: SELEZIONARE UN ITINERARIO";
+                toast.style.backgroundColor = "red";
+                toast.classList.add('active');
+                setTimeout(() => {
+                    toast.classList.remove('active');
+                    toast.style.backgroundColor = "var(--acid)";
+                }, 3000);
+                return;
+            }
+            
+            // Close detail modal and open booking modal
+            closeDetails();
+            
+            // Pre-fill Booking Modal Info
+            document.getElementById('booking-dest-name').innerText = selectedDestData.name;
+            const fullItinString = selectedDestData.itineraries.find(i => i.startsWith(selectedItinerary));
+            document.getElementById('booking-itinerary-name').innerText = fullItinString; // Show full desc in modal preview
+            
+            openBooking();
+        }
+
+        // --- BOOKING & PDF AGGIORNATO (Booking style) ---
 
         function openBooking() { document.getElementById('modal-booking').style.display = 'flex'; }
         function closeBooking() { document.getElementById('modal-booking').style.display = 'none'; }
@@ -205,43 +623,116 @@
         function generateBookingPDF() {
             const { jsPDF } = window.jspdf;
             const doc = new jsPDF();
-            const agent = document.getElementById('user-name').value || "INCognito_AGENT";
-            const date = new Date().toLocaleString();
+            const agent = document.getElementById('user-name').value || "Viaggiatore";
+            const date = new Date().toLocaleDateString();
+            const bookingRef = "NMD-" + Math.floor(Math.random() * 1000000);
             
-            const allDest = [...destinations, ...secretDestinations];
-            const destInfo = allDest.find(d => d.name === selectedDest) || { loc: "Unknown", price: "N/A", desc: "Dati Criptati." };
+            // Get data from state
+            const dest = selectedDestData;
+            const fullItin = dest.itineraries.find(i => i.startsWith(selectedItinerary));
+            const itinTitle = fullItin.split(':')[0];
+            const itinDesc = fullItin.split(':')[1];
 
-            doc.setFillColor(0, 0, 0);
-            doc.rect(0, 0, 210, 297, 'F');
-            doc.setTextColor(204, 255, 0);
-            doc.setFont("courier", "bold");
-            doc.setFontSize(22);
-            doc.text("NOMAD // CONFIRMATION_REPORT", 15, 30);
+            // --- STILE BOOKING / DOCUMENTO UFFICIALE (Sfondo bianco, pulito) ---
+            
+            // Header Bar
+            doc.setFillColor(7, 7, 7); // Nero scuro NOMAD
+            doc.rect(0, 0, 210, 40, 'F');
+            
+            doc.setTextColor(204, 255, 0); // Acid Green
+            doc.setFont("helvetica", "bold");
+            doc.setFontSize(24);
+            doc.text("NOMAD", 15, 20);
+            doc.setFontSize(10);
+            doc.setTextColor(255, 255, 255);
+            doc.text("Travel & Exploration Division", 15, 26);
+            
+            doc.setTextColor(255, 255, 255);
+            doc.setFontSize(14);
+            doc.text("CONFERMA DI PRENOTAZIONE", 130, 25);
+
+            // Sezione Stato e Info Principali
+            doc.setTextColor(0, 150, 0); // Verde scuro "Booking confirmed"
+            doc.setFontSize(12);
+            doc.setFont("helvetica", "bold");
+            doc.text("✔ Confermata", 15, 55);
+            
+            doc.setTextColor(60, 60, 60);
+            doc.setFontSize(10);
+            doc.setFont("helvetica", "normal");
+            doc.text(`Grazie ${agent}, la tua spedizione è confermata.`, 15, 62);
+            doc.text(`Booking Reference: ${bookingRef}`, 15, 68);
+
+            // Linea separatrice
+            doc.setDrawColor(220, 220, 220);
+            doc.line(15, 75, 195, 75);
+
+            // Dettagli Destinazione (Box Principale)
+            doc.setFontSize(18);
+            doc.setTextColor(0, 0, 0);
+            doc.setFont("helvetica", "bold");
+            doc.text(dest.name.toUpperCase(), 15, 90);
+            
+            doc.setFontSize(11);
+            doc.setTextColor(100, 100, 100);
+            doc.text(dest.loc, 15, 96);
+
+            // Box dettagli viaggio
+            doc.setFillColor(248, 248, 248);
+            doc.rect(15, 105, 180, 50, 'F');
             
             doc.setFontSize(10);
-            doc.setTextColor(150, 150, 150);
-            doc.text(`DATE: ${date}`, 15, 45);
-            doc.text(`AGENT ID: ${agent.toUpperCase()}`, 15, 50);
-            doc.line(15, 55, 195, 55);
+            doc.setTextColor(60, 60, 60);
+            doc.setFont("helvetica", "bold");
+            doc.text("ITINERARIO SELEZIONATO:", 20, 115);
+            doc.setFont("helvetica", "normal");
+            doc.text(itinTitle, 20, 122);
+            
+            // Descrizione itinerario wrap
+            const splitItin = doc.splitTextToSize(itinDesc, 170);
+            doc.text(splitItin, 20, 128);
 
-            doc.setTextColor(255, 255, 255);
-            doc.setFontSize(16);
-            doc.text(`DESTINATION: ${selectedDest.toUpperCase()}`, 15, 75);
+            // Dettagli Prezzi (Tabella)
+            let startY = 170;
+            doc.setFont("helvetica", "bold");
+            doc.setTextColor(0, 0, 0);
+            doc.text("Riepilogo Costi", 15, startY);
+            
+            doc.setDrawColor(200, 200, 200);
+            doc.line(15, startY + 2, 195, startY + 2);
+
+            doc.setFont("helvetica", "normal");
+            doc.setFontSize(10);
+            
+            // Riga 1
+            doc.text("Pacchetto Base (x1 Viaggiatore)", 15, startY + 10);
+            doc.text(`EUR ${dest.price},00`, 170, startY + 10);
+            
+            // Riga 2
+            doc.text("Tasse e oneri di servizio", 15, startY + 18);
+            doc.text("EUR 0,00", 170, startY + 18);
+
+            // Totale
+            doc.setFont("helvetica", "bold");
             doc.setFontSize(12);
-            doc.text(`LOCATION: ${destInfo.loc}`, 15, 85);
-            doc.text(`TOTAL CREDIT: EUR ${destInfo.price}`, 15, 95);
+            doc.text("Prezzo Totale", 15, startY + 30);
+            doc.setTextColor(0, 120, 0); // Prezzo verde
+            doc.setFontSize(14);
+            doc.text(`EUR ${dest.price},00`, 170, startY + 30);
 
-            doc.setTextColor(204, 255, 0);
-            doc.text("--- BRIEFING ---", 15, 120);
-            doc.setTextColor(255, 255, 255);
-            const splitDesc = doc.splitTextToSize(destInfo.desc, 170);
-            doc.text(splitDesc, 15, 130);
-
-            doc.setFontSize(8);
+            // Note finali / Footer
             doc.setTextColor(100, 100, 100);
-            doc.text("DOCUMENTO GENERATO TRAMITE NOMAD CORE. VALIDITA' TEMPORANEA 24H.", 15, 280);
+            doc.setFontSize(8);
+            doc.setFont("helvetica", "normal");
+            doc.text("Note Importanti:", 15, 230);
+            doc.text("1. Questo documento serve come voucher elettronico.", 15, 235);
+            doc.text("2. Presentarsi al punto di ritrovo 3 ore prima della partenza prevista.", 15, 240);
+            doc.text("3. L'attrezzatura tecnica verrà fornita in loco salvo diversa indicazione.", 15, 245);
+            
+            doc.text("NOMAD Travel Systems - 2026 Corporation", 15, 280);
+            doc.text("Supporto clienti: help@nomad.sys | ID Transazione: " + bookingRef, 15, 285);
 
-            doc.save(`NOMAD_BOOKING_${selectedDest.toUpperCase()}.pdf`);
+            doc.save(`BOOKING_${bookingRef}_${dest.name}.pdf`);
             closeBooking();
         }
 
@@ -266,7 +757,9 @@
         }
         function closeSecret() { document.getElementById('secret-vault').style.display = 'none'; }
 
+        // Init
         renderGrid(destinations);
+        renderSalesGrid(); // Renderizzo anche la griglia Sales
     </script>
 </body>
 </html>
